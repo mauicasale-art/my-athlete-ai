@@ -89,7 +89,7 @@ header .sub{font-size:11px;color:var(--muted);margin-top:2px}
 .act-name{flex:1;font-size:12px}
 .act-meta{font-size:10px;color:var(--muted);text-align:right;line-height:1.6}
 
-canvas{max-height:170px}
+canvas{max-height:240px}
 
 @media(max-width:480px){.g4{grid-template-columns:repeat(2,1fr)}.presess{grid-template-columns:1fr}}
 </style>
@@ -206,6 +206,7 @@ canvas{max-height:170px}
 const RAW = 'https://raw.githubusercontent.com/mauicasale-art/my-athlete-ai/main/';
 const GARMIN_URL = RAW + 'garmin/data.json';
 const STRAVA_URL = RAW + 'strava_activities.json';
+const BIOMECH_URL = RAW + 'biomech.json';
 
 // ── Classificatore sessioni ────────────────────────────────────────────────────
 function classify(name) {
@@ -231,6 +232,15 @@ function paceStr(spd) {
   return `${m}:${ss}`;
 }
 function paceMin(spd) { return spd ? Math.round(1000/spd/60*100)/100 : null; }
+function paceFromS(s) { const m=Math.floor(s/60), ss=(s%60).toString().padStart(2,'0'); return `${m}:${ss}`; }
+function sToMin(s) { return Math.round(s/60*100)/100; }
+
+// ── Date italiana ─────────────────────────────────────────────────────────────
+const MESI=['','gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+function fmtDate(iso) {
+  const [,m,d]=iso.slice(0,10).split('-');
+  return `${+d} ${MESI[+m]}`;
+}
 
 // ── Readiness ─────────────────────────────────────────────────────────────────
 function readiness(w) {
@@ -328,7 +338,7 @@ function weeklyByType(acts) {
     weeks[key][t in weeks[key]?t:'X']+=(a.distance||0)/1000;
   });
   const sorted=Object.entries(weeks).sort((a,b)=>a[0].localeCompare(b[0]));
-  const labels=sorted.map(([k])=>k.slice(5));
+  const labels=sorted.map(([k])=>fmtDate(k));
   return {
     labels,
     R:sorted.map(([,v])=>Math.round(v.R*10)/10),
@@ -375,71 +385,174 @@ function renderMilestones(acts) {
   });
 }
 
-// ── T Run table ───────────────────────────────────────────────────────────────
-function renderTRuns(acts) {
+// ── T Run chart + table (usa biomech.json per passo reale) ───────────────────
+function renderTRuns(acts, bio) {
   const truns=acts.filter(a=>a.sport_type==='Run'&&classify(a.name)==='T');
   if(!truns.length) return;
 
-  // chart
-  mkChart('tChart',
-    truns.map(a=>a.start_local.slice(5,10)),
-    [{label:'Passo medio (min/km)',data:truns.map(a=>paceMin(a.avg_speed)),borderColor:'var(--blue)'}],
-    {reverse:true, min:4.8, max:6.5}
-  );
+  const tRunData = bio?.t_runs || [];
 
-  // table
+  if(tRunData.length) {
+    // Grafico con doppio asse: passo reale (sinistra) + FC (destra)
+    const labels = tRunData.map(t=>fmtDate(t.date));
+    const paceData = tRunData.map(t=>sToMin(t.tempo_pace_s));
+    const hrData = tRunData.map(t=>t.tempo_hr);
+
+    new Chart(document.getElementById('tChart').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Passo sforzo (min/km)',
+            data: paceData,
+            borderColor: 'var(--blue)',
+            backgroundColor: '#3b82f615',
+            yAxisID: 'yPace',
+            borderWidth: 2, pointRadius: 6, tension: 0.2,
+          },
+          {
+            label: 'FC sforzo (bpm)',
+            data: hrData,
+            borderColor: 'var(--red)',
+            backgroundColor: '#ef444415',
+            yAxisID: 'yHR',
+            borderWidth: 2, pointRadius: 6, tension: 0.2,
+            borderDash: [4,3],
+          },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: true,
+        plugins: {
+          legend: {display:true, labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:8}},
+          tooltip: {callbacks: {
+            label: ctx => {
+              if(ctx.dataset.yAxisID==='yPace') {
+                const v=ctx.raw, m=Math.floor(v), s=Math.round((v-m)*60).toString().padStart(2,'0');
+                const note=tRunData[ctx.dataIndex]?.note||'';
+                return `Passo: ${m}:${s}/km  (${note})`;
+              }
+              return `FC: ${ctx.raw} bpm`;
+            }
+          }}
+        },
+        scales: {
+          x: {ticks:{color:'#8892a4',font:{size:10}}, grid:{color:'#2a2d3a'}},
+          yPace: {
+            type:'linear', position:'left', reverse:true, min:4.0, max:5.8,
+            ticks:{color:'var(--blue)',font:{size:10},
+              callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}
+            },
+            grid:{color:'#2a2d3a'},
+            title:{display:true, text:'min/km', color:'var(--blue)', font:{size:9}},
+          },
+          yHR: {
+            type:'linear', position:'right', min:160, max:192,
+            ticks:{color:'var(--red)',font:{size:10}},
+            grid:{display:false},
+            title:{display:true, text:'bpm FC', color:'var(--red)', font:{size:9}},
+          },
+        },
+      },
+    });
+  } else {
+    // fallback senza biomech
+    mkChart('tChart',
+      truns.map(a=>fmtDate(a.start_local)),
+      [{label:'Passo (min/km)',data:truns.map(a=>paceMin(a.avg_speed)),borderColor:'var(--blue)'}],
+      {reverse:true, min:4.8, max:6.5}
+    );
+  }
+
+  // table: mostra passo reale se disponibile in biomech, altrimenti media attività
+  const bioById = Object.fromEntries(tRunData.map(t=>[t.id,t]));
   const tbl=document.getElementById('t-table');
-  tbl.innerHTML=`<tr><th>Sessione</th><th>Data</th><th>Passo</th><th>FC</th><th>Dist</th></tr>`+
-    truns.map(a=>`<tr>
-      <td>${pillHtml('T')} ${a.name}</td>
-      <td>${a.start_local.slice(0,10)}</td>
-      <td><strong>${paceStr(a.avg_speed)}/km</strong></td>
-      <td>${a.avg_hr?Math.round(a.avg_hr)+'♥':'—'}</td>
-      <td>${(a.distance/1000).toFixed(1)} km</td>
-    </tr>`).join('');
+  tbl.innerHTML=`<tr><th>Sessione</th><th>Data</th><th>Passo sforzo</th><th>FC</th><th>Dist</th></tr>`+
+    truns.map(a=>{
+      const b=bioById[a.id];
+      const paceCell = b
+        ? `<strong>${paceFromS(b.tempo_pace_s)}/km</strong><br><span style="font-size:9px;color:var(--muted)">${b.note}</span>`
+        : `${paceStr(a.avg_speed)}/km <span style="font-size:9px;color:var(--muted)">(media att.)</span>`;
+      const fc = b ? b.tempo_hr+'♥' : (a.avg_hr?Math.round(a.avg_hr)+'♥':'—');
+      return `<tr>
+        <td>${pillHtml('T')} ${a.name}</td>
+        <td>${fmtDate(a.start_local)}</td>
+        <td>${paceCell}</td>
+        <td>${fc}</td>
+        <td>${(a.distance/1000).toFixed(1)} km</td>
+      </tr>`;
+    }).join('');
 }
 
-// ── Aerobic efficiency ────────────────────────────────────────────────────────
-function renderAerobicEfficiency(acts) {
-  const z2=acts.filter(a=>
-    a.sport_type==='Run' &&
-    a.avg_hr!=null && a.avg_hr>=145 && a.avg_hr<=162 &&
-    a.distance>=5000 &&
-    classify(a.name)!=='R'
-  );
-  if(!z2.length) return;
+// ── Efficienza aerobica (3 punti da analisi lap, non medie attività) ──────────
+function renderAerobicEfficiency(bio) {
+  const pts = bio?.aerobic_efficiency || [];
+  if(!pts.length) return;
 
-  mkChart('aerChart',
-    z2.map(a=>a.start_local.slice(5,10)),
-    [{label:'min/km a FC 145-162', data:z2.map(a=>paceMin(a.avg_speed)), borderColor:'var(--teal)'}],
-    {reverse:true, min:5.5, max:8.5,
-      ticks:{callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}}
-    }
-  );
+  const labels = pts.map(p=>p.label);
+  const paceData = pts.map(p=>sToMin(p.pace_s));
 
-  // delta summary
-  const first=z2[0], last=z2[z2.length-1];
-  const d1=paceMin(first.avg_speed), d2=paceMin(last.avg_speed);
-  const ds=Math.round((d1-d2)*60);
-  document.getElementById('aer-note').textContent=
-    `${z2.length} corse Z2 ≥5km · ${first.start_local.slice(0,7)} → ${last.start_local.slice(0,7)} · miglioramento: −${ds}s/km a parità FC`;
+  new Chart(document.getElementById('aerChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Passo a FC 155-162 (min/km)',
+        data: paceData,
+        borderColor: 'var(--teal)',
+        backgroundColor: '#14b8a615',
+        borderWidth: 3, pointRadius: 8, pointHoverRadius: 10, tension: 0.1,
+      }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: {
+        legend: {display:false},
+        tooltip: {callbacks: {
+          label: ctx => {
+            const p = pts[ctx.dataIndex];
+            const m=Math.floor(ctx.raw), s=Math.round((ctx.raw-m)*60).toString().padStart(2,'0');
+            return [`Passo: ${m}:${s}/km`, p.hr_note, p.pace_note];
+          }
+        }}
+      },
+      scales: {
+        x: {ticks:{color:'#8892a4',font:{size:12},padding:6}, grid:{color:'#2a2d3a'}},
+        y: {
+          reverse:true, min:5.5, max:8.0,
+          ticks:{color:'#8892a4', font:{size:11},
+            callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}
+          },
+          grid:{color:'#2a2d3a'},
+        },
+      },
+    },
+  });
+
+  // nota sotto con delta totale
+  const first=pts[0], last=pts[pts.length-1];
+  const deltaSec = first.pace_s - last.pace_s;
+  document.getElementById('aer-note').innerHTML=
+    `Dati da analisi lap (non media attività) · <strong style="color:var(--green)">−${deltaSec}s/km</strong> a parità FC in ${pts.length-1} mesi · ${first.pace_note} → ${last.pace_note}`;
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
   renderGoals();
 
-  const [garmin, strava] = await Promise.all([
+  const [garmin, strava, bio] = await Promise.all([
     fetch(GARMIN_URL+'?t='+Date.now()).then(r=>r.json()).catch(()=>null),
     fetch(STRAVA_URL+'?t='+Date.now()).then(r=>r.json()).catch(()=>[]),
+    fetch(BIOMECH_URL+'?t='+Date.now()).then(r=>r.json()).catch(()=>null),
   ]);
 
   const acts = strava||[];
 
   // ── Strava charts ───────────────────────────────────────────────────────────
   renderMilestones(acts);
-  renderTRuns(acts);
-  renderAerobicEfficiency(acts);
+  renderTRuns(acts, bio);
+  renderAerobicEfficiency(bio);
 
   // Weekly by type
   const wk=weeklyByType(acts);
@@ -454,15 +567,17 @@ async function main() {
   // Pace trend (>5km, last 30)
   const runs5=acts.filter(a=>a.sport_type==='Run'&&a.distance>=5000).slice(-30);
   mkChart('paceChart',
-    runs5.map(a=>a.start_local.slice(5,10)),
+    runs5.map(a=>fmtDate(a.start_local)),
     [{label:'min/km',data:runs5.map(a=>paceMin(a.avg_speed)),borderColor:'var(--orange)'}],
-    {reverse:true,min:4.5,max:8}
+    {reverse:true,min:4.5,max:8,
+      ticks:{callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}}
+    }
   );
 
   // Cadence
   const cads=acts.filter(a=>a.sport_type==='Run'&&a.avg_cadence).slice(-25);
   mkChart('cadChart',
-    cads.map(a=>a.start_local.slice(5,10)),
+    cads.map(a=>fmtDate(a.start_local)),
     [{label:'spm',data:cads.map(a=>Math.round(a.avg_cadence)),borderColor:'var(--teal)'}],
     {min:130,max:175}
   );
@@ -524,7 +639,7 @@ async function main() {
 
   // Garmin charts 30gg
   const w30=[...well].slice(0,30).reverse();
-  const l30=w30.map(d=>d.date.slice(5));
+  const l30=w30.map(d=>fmtDate(d.date));
   mkChart('hrChart',l30,[{data:w30.map(d=>d.resting_hr),borderColor:'#ef4444',label:'bpm'}],{min:44,max:70});
   mkChart('bbChart',l30,[{data:w30.map(d=>d.body_battery_end),borderColor:'#3b82f6',label:'%'}],{min:0,max:100});
   mkChart('slpChart',l30,[{data:w30.map(d=>d.sleep_score),borderColor:'#a855f7',label:'score'}],{min:0,max:100});

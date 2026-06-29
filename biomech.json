@@ -1,0 +1,51 @@
+{
+  "t_runs": [
+    {
+      "id": "18792790917",
+      "date": "2026-06-05",
+      "label": "T1",
+      "tempo_pace_s": 287,
+      "tempo_hr": 180,
+      "note": "3×2km @4:47/km · FC180 · con recuperi"
+    },
+    {
+      "id": "18886821325",
+      "date": "2026-06-12",
+      "label": "T2",
+      "tempo_pace_s": 275,
+      "tempo_hr": 171,
+      "note": "4km continui @4:35/km · FC171 · soglia T2 reale"
+    },
+    {
+      "id": "19018018651",
+      "date": "2026-06-22",
+      "label": "T3",
+      "tempo_pace_s": 310,
+      "tempo_hr": 177,
+      "note": "10km progressivo · porzione sostenuta ~5:10/km"
+    }
+  ],
+  "aerobic_efficiency": [
+    {
+      "month": "2026-03",
+      "label": "Mar",
+      "pace_s": 446,
+      "hr_note": "FC 155-162",
+      "pace_note": "7:20–7:32/km"
+    },
+    {
+      "month": "2026-05",
+      "label": "Mag",
+      "pace_s": 378,
+      "hr_note": "FC 155-162",
+      "pace_note": "6:16–6:20/km"
+    },
+    {
+      "month": "2026-06",
+      "label": "Giu",
+      "pace_s": 357,
+      "hr_note": "FC 155-162",
+      "pace_note": "5:48–6:05/km"
+    }
+  ]
+}
