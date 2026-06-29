@@ -9,6 +9,8 @@
     "elevation_gain": 23.4,
     "avg_speed": 2.4995,
     "avg_cadence": null,
+    "avg_hr": null,
+    "max_hr": null,
     "relative_effort": null,
     "calories": 386
   },
@@ -22,6 +24,8 @@
     "elevation_gain": 6.8,
     "avg_speed": 2.2687,
     "avg_cadence": null,
+    "avg_hr": null,
+    "max_hr": null,
     "relative_effort": null,
     "calories": 484
   },
@@ -35,6 +39,8 @@
     "elevation_gain": 11.6,
     "avg_speed": 2.3714,
     "avg_cadence": 73.9,
+    "avg_hr": 173.0,
+    "max_hr": 188,
     "relative_effort": null,
     "calories": 484
   },
@@ -48,6 +54,8 @@
     "elevation_gain": 26.4,
     "avg_speed": 2.3578,
     "avg_cadence": null,
+    "avg_hr": 172.7,
+    "max_hr": 186,
     "relative_effort": null,
     "calories": 489
   },
@@ -61,6 +69,8 @@
     "elevation_gain": 33,
     "avg_speed": 2.2723,
     "avg_cadence": null,
+    "avg_hr": 161.7,
+    "max_hr": 193,
     "relative_effort": null,
     "calories": 587
   },
@@ -74,6 +84,8 @@
     "elevation_gain": 16.8,
     "avg_speed": 2.2134,
     "avg_cadence": null,
+    "avg_hr": 161.8,
+    "max_hr": 171,
     "relative_effort": null,
     "calories": 532
   },
@@ -87,6 +99,8 @@
     "elevation_gain": 31.2,
     "avg_speed": 2.4927,
     "avg_cadence": null,
+    "avg_hr": 166.6,
+    "max_hr": 195,
     "relative_effort": 108,
     "calories": 643
   },
@@ -100,6 +114,8 @@
     "elevation_gain": 36.8,
     "avg_speed": 2.4213,
     "avg_cadence": null,
+    "avg_hr": 166.2,
+    "max_hr": 185,
     "relative_effort": 116,
     "calories": 705
   },
@@ -113,6 +129,8 @@
     "elevation_gain": 35.8,
     "avg_speed": 2.3243,
     "avg_cadence": null,
+    "avg_hr": 165.9,
+    "max_hr": 183,
     "relative_effort": null,
     "calories": 877
   },
@@ -126,6 +144,8 @@
     "elevation_gain": 50.2,
     "avg_speed": 2.6647,
     "avg_cadence": null,
+    "avg_hr": 169.7,
+    "max_hr": 194,
     "relative_effort": 147,
     "calories": 832
   },
@@ -139,6 +159,8 @@
     "elevation_gain": 30.4,
     "avg_speed": 2.5102,
     "avg_cadence": null,
+    "avg_hr": 165.5,
+    "max_hr": 190,
     "relative_effort": null,
     "calories": 602
   },
@@ -152,6 +174,8 @@
     "elevation_gain": 27.6,
     "avg_speed": 2.3365,
     "avg_cadence": null,
+    "avg_hr": 161.9,
+    "max_hr": 170,
     "relative_effort": 164,
     "calories": 1011
   },
@@ -165,6 +189,8 @@
     "elevation_gain": 18.4,
     "avg_speed": 2.4647,
     "avg_cadence": null,
+    "avg_hr": 169.3,
+    "max_hr": 188,
     "relative_effort": null,
     "calories": 701
   },
@@ -178,6 +204,8 @@
     "elevation_gain": 42.8,
     "avg_speed": 2.1343,
     "avg_cadence": null,
+    "avg_hr": 152.1,
+    "max_hr": 160,
     "relative_effort": 90,
     "calories": 689
   },
@@ -191,6 +219,8 @@
     "elevation_gain": 29,
     "avg_speed": 2.3749,
     "avg_cadence": null,
+    "avg_hr": 160.5,
+    "max_hr": 175,
     "relative_effort": 177,
     "calories": 1303
   },
@@ -204,6 +234,8 @@
     "elevation_gain": 21.9,
     "avg_speed": 2.569,
     "avg_cadence": 72.9,
+    "avg_hr": 168.5,
+    "max_hr": 184,
     "relative_effort": 229,
     "calories": 1298
   },
@@ -217,6 +249,8 @@
     "elevation_gain": 8.4,
     "avg_speed": 2.5949,
     "avg_cadence": 68.3,
+    "avg_hr": 178.7,
+    "max_hr": 195,
     "relative_effort": null,
     "calories": 586
   },
@@ -230,6 +264,8 @@
     "elevation_gain": 30.6,
     "avg_speed": 2.355,
     "avg_cadence": 69.7,
+    "avg_hr": 164.6,
+    "max_hr": 195,
     "relative_effort": 104,
     "calories": 691
   },
@@ -243,6 +279,8 @@
     "elevation_gain": 16.8,
     "avg_speed": 2.2757,
     "avg_cadence": 70.8,
+    "avg_hr": 155.3,
+    "max_hr": 162,
     "relative_effort": 105,
     "calories": 862
   },
@@ -256,6 +294,8 @@
     "elevation_gain": 38.6,
     "avg_speed": 2.9457,
     "avg_cadence": null,
+    "avg_hr": 184.6,
+    "max_hr": 194,
     "relative_effort": 145,
     "calories": 568
   },
@@ -269,6 +309,8 @@
     "elevation_gain": 16.6,
     "avg_speed": 2.2952,
     "avg_cadence": null,
+    "avg_hr": 161.5,
+    "max_hr": 172,
     "relative_effort": 114,
     "calories": 769
   },
@@ -282,6 +324,8 @@
     "elevation_gain": 27.9,
     "avg_speed": 2.5996,
     "avg_cadence": 74.4,
+    "avg_hr": 165.2,
+    "max_hr": 182,
     "relative_effort": 211,
     "calories": 1444
   },
@@ -295,6 +339,8 @@
     "elevation_gain": 59.6,
     "avg_speed": 2.379,
     "avg_cadence": null,
+    "avg_hr": 160.3,
+    "max_hr": 180,
     "relative_effort": 117,
     "calories": 898
   },
@@ -308,6 +354,8 @@
     "elevation_gain": 19.4,
     "avg_speed": 2.6604,
     "avg_cadence": 73.0,
+    "avg_hr": 170.8,
+    "max_hr": 185,
     "relative_effort": 182,
     "calories": 978
   },
@@ -321,6 +369,8 @@
     "elevation_gain": 20.2,
     "avg_speed": 2.8865,
     "avg_cadence": 75.9,
+    "avg_hr": 174.6,
+    "max_hr": 187,
     "relative_effort": 129,
     "calories": 666
   },
@@ -334,6 +384,8 @@
     "elevation_gain": 14.2,
     "avg_speed": 2.6044,
     "avg_cadence": 75.0,
+    "avg_hr": null,
+    "max_hr": null,
     "relative_effort": 74,
     "calories": 586
   },
@@ -347,6 +399,8 @@
     "elevation_gain": 11.1,
     "avg_speed": 3.0317,
     "avg_cadence": 77.4,
+    "avg_hr": 177.3,
+    "max_hr": 191,
     "relative_effort": 130,
     "calories": 604
   },
@@ -360,6 +414,8 @@
     "elevation_gain": 13.9,
     "avg_speed": 2.6332,
     "avg_cadence": 74.7,
+    "avg_hr": 167.1,
+    "max_hr": 173,
     "relative_effort": 100,
     "calories": 697
   },
@@ -373,6 +429,8 @@
     "elevation_gain": 62.3,
     "avg_speed": 2.6629,
     "avg_cadence": 76.0,
+    "avg_hr": 166.7,
+    "max_hr": 181,
     "relative_effort": 124,
     "calories": 844
   },
@@ -386,6 +444,8 @@
     "elevation_gain": 11.1,
     "avg_speed": 2.5734,
     "avg_cadence": 76.0,
+    "avg_hr": 161.6,
+    "max_hr": 168,
     "relative_effort": 68,
     "calories": 513
   },
@@ -399,6 +459,8 @@
     "elevation_gain": 56,
     "avg_speed": 2.8475,
     "avg_cadence": 72.7,
+    "avg_hr": 168.4,
+    "max_hr": 185,
     "relative_effort": 106,
     "calories": 633
   },
@@ -412,6 +474,8 @@
     "elevation_gain": 12.1,
     "avg_speed": 3.2991,
     "avg_cadence": 76.96,
+    "avg_hr": 183.7,
+    "max_hr": 197,
     "relative_effort": 196,
     "calories": 775
   },
@@ -425,6 +489,8 @@
     "elevation_gain": 52.2,
     "avg_speed": 2.3804,
     "avg_cadence": 73.5,
+    "avg_hr": 160.9,
+    "max_hr": 182,
     "relative_effort": 90,
     "calories": 658
   },
@@ -438,6 +504,8 @@
     "elevation_gain": 32.4,
     "avg_speed": 2.8643,
     "avg_cadence": null,
+    "avg_hr": 176.8,
+    "max_hr": 191,
     "relative_effort": 113,
     "calories": 504
   },
@@ -451,6 +519,8 @@
     "elevation_gain": 16.4,
     "avg_speed": 2.8241,
     "avg_cadence": null,
+    "avg_hr": 170.1,
+    "max_hr": 192,
     "relative_effort": 70,
     "calories": 404
   },
@@ -464,6 +534,8 @@
     "elevation_gain": 37,
     "avg_speed": 2.9875,
     "avg_cadence": 77.99,
+    "avg_hr": 176.6,
+    "max_hr": 190,
     "relative_effort": 116,
     "calories": 607
   },
@@ -477,6 +549,8 @@
     "elevation_gain": 18,
     "avg_speed": 2.8419,
     "avg_cadence": 76.97,
+    "avg_hr": 170.9,
+    "max_hr": 197,
     "relative_effort": 93,
     "calories": 513
   },
@@ -490,6 +564,8 @@
     "elevation_gain": 17,
     "avg_speed": 2.8357,
     "avg_cadence": 76.46,
+    "avg_hr": 164.4,
+    "max_hr": 190,
     "relative_effort": 82,
     "calories": 561
   },
@@ -503,6 +579,8 @@
     "elevation_gain": 9,
     "avg_speed": 2.9202,
     "avg_cadence": 77.05,
+    "avg_hr": 165.6,
+    "max_hr": 188,
     "relative_effort": 80,
     "calories": 536
   },
@@ -516,6 +594,8 @@
     "elevation_gain": 8,
     "avg_speed": 2.7344,
     "avg_cadence": 75.28,
+    "avg_hr": 167.1,
+    "max_hr": 188,
     "relative_effort": 93,
     "calories": 606
   },
@@ -529,6 +609,8 @@
     "elevation_gain": 60,
     "avg_speed": 2.9525,
     "avg_cadence": 77.87,
+    "avg_hr": 165.5,
+    "max_hr": 191,
     "relative_effort": 232,
     "calories": 1653
   },
@@ -542,6 +624,8 @@
     "elevation_gain": 16,
     "avg_speed": 2.8722,
     "avg_cadence": 74.22,
+    "avg_hr": 165.1,
+    "max_hr": 186,
     "relative_effort": 82,
     "calories": 583
   },
@@ -555,6 +639,8 @@
     "elevation_gain": 13,
     "avg_speed": 2.9622,
     "avg_cadence": 77.11,
+    "avg_hr": 169.7,
+    "max_hr": 191,
     "relative_effort": 90,
     "calories": 562
   },
@@ -568,6 +654,8 @@
     "elevation_gain": 22,
     "avg_speed": 2.5017,
     "avg_cadence": 76.22,
+    "avg_hr": 158.1,
+    "max_hr": 166,
     "relative_effort": 104,
     "calories": 786
   },
@@ -581,6 +669,8 @@
     "elevation_gain": 14,
     "avg_speed": 3.1362,
     "avg_cadence": 77.61,
+    "avg_hr": 174.3,
+    "max_hr": 187,
     "relative_effort": 144,
     "calories": 731
   },
@@ -594,6 +684,8 @@
     "elevation_gain": 18,
     "avg_speed": 2.8534,
     "avg_cadence": 77.61,
+    "avg_hr": 172.3,
+    "max_hr": 192,
     "relative_effort": 148,
     "calories": 786
   },
@@ -607,6 +699,8 @@
     "elevation_gain": 10,
     "avg_speed": 2.4799,
     "avg_cadence": 76.49,
+    "avg_hr": 154.3,
+    "max_hr": 163,
     "relative_effort": 75,
     "calories": 601
   },
@@ -620,6 +714,8 @@
     "elevation_gain": 18,
     "avg_speed": 2.0598,
     "avg_cadence": 71.15,
+    "avg_hr": 145.6,
+    "max_hr": 163,
     "relative_effort": 24,
     "calories": 294
   },
@@ -633,6 +729,8 @@
     "elevation_gain": 58,
     "avg_speed": 3.1574,
     "avg_cadence": 78.5,
+    "avg_hr": 170.9,
+    "max_hr": 188,
     "relative_effort": 132,
     "calories": 714
   },
@@ -646,6 +744,8 @@
     "elevation_gain": 23,
     "avg_speed": 2.7852,
     "avg_cadence": 78.55,
+    "avg_hr": 161.8,
+    "max_hr": 179,
     "relative_effort": 103,
     "calories": 743
   },
@@ -659,6 +759,8 @@
     "elevation_gain": 13,
     "avg_speed": 2.7974,
     "avg_cadence": 76.28,
+    "avg_hr": 169.1,
+    "max_hr": 191,
     "relative_effort": 87,
     "calories": 520
   },
@@ -672,12 +774,14 @@
     "elevation_gain": 46,
     "avg_speed": 2.9917,
     "avg_cadence": 76.74,
+    "avg_hr": 172.4,
+    "max_hr": 187,
     "relative_effort": 147,
     "calories": 746
   },
   {
     "id": "19058087286",
-    "name": "Ripetute 6x1’",
+    "name": "Ripetute 6x1'",
     "sport_type": "Run",
     "start_local": "2026-06-25T07:36:02",
     "distance": 6784.3,
