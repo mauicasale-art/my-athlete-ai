@@ -214,7 +214,6 @@ def sink_files(all_wellness, all_activities, out_dir: Path, dry_run: bool):
             json.dumps(data, indent=2, default=str), encoding="utf-8"
         )
         print(f"  [json] {out_dir / 'data.json'}")
-write_latest(all_wellness, all_activities, out_dir)
 
 
 def sink_supabase(all_wellness, all_activities, dry_run: bool):
@@ -240,37 +239,6 @@ def sink_supabase(all_wellness, all_activities, dry_run: bool):
     with urllib.request.urlopen(req) as resp:
         print(f"  [supabase] {resp.status} {resp.reason}")
 
-def write_latest(all_wellness, all_activities, out_dir):
-    from pathlib import Path
-    today_w = all_wellness[0] if all_wellness else {}
-    lines = ["# Latest - " + today_w.get("date", "n/a")]
-    lines.append("\n## Wellness")
-    if today_w.get("resting_hr"):
-        lines.append("- Resting HR: " + str(today_w["resting_hr"]) + " bpm")
-    if today_w.get("hrv_overnight"):
-        lines.append("- HRV overnight: " + str(today_w["hrv_overnight"]) + " ms")
-    secs = today_w.get("sleep_seconds")
-    if secs:
-        lines.append("- Sleep: " + str(round(secs/3600, 1)) + " h (score " + str(today_w.get("sleep_score", "n/a")) + ")")
-    bs = today_w.get("body_battery_start")
-    be = today_w.get("body_battery_end")
-    if bs is not None and be is not None:
-        lines.append("- Body battery: " + str(bs) + " -> " + str(be))
-    if today_w.get("training_readiness"):
-        lines.append("- Training readiness: " + str(today_w["training_readiness"]))
-    if today_w.get("stress_avg"):
-        lines.append("- Stress avg: " + str(today_w["stress_avg"]))
-    lines.append("\n## Attivita recenti")
-    for day, acts in all_activities:
-        for a in acts:
-            name = a.get("activityName", "Activity")
-            km = round((a.get("distance") or 0) / 1000, 2)
-            hr = a.get("averageHR", "n/a")
-            mins = round((a.get("duration") or 0) / 60, 1)
-            lines.append("- " + str(day) + ": " + name + " | " + str(km) + "km | " + str(mins) + "min | FC " + str(hr))
-    path = Path(out_dir) / "latest.md"
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print("  [latest] " + str(path))
 
 # ── main ───────────────────────────────────────────────────────────────────────
 
