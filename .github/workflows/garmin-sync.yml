@@ -1,0 +1,36 @@
+name: Garmin Sync
+
+on:
+  schedule:
+    # ogni mattina alle 07:00 UTC (09:00 ora italiana)
+    - cron: "0 7 * * *"
+  workflow_dispatch: # permette di avviare manualmente dalla tab Actions
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Garmin sync
+        env:
+          GARMIN_TOKEN_B64: ${{ secrets.GARMIN_TOKEN_B64 }}
+        run: python sync_garmin.py --days 3 --sink files --out ./garmin
+
+      - name: Commit and push garmin data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add garmin/
+          git diff --staged --quiet || git commit -m "chore: garmin sync $(date -u +%Y-%m-%d)"
+          git push
