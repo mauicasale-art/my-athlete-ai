@@ -1,0 +1,42 @@
+exclude: '.*\.ipynb$'
+
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+  - id: check-yaml
+    args: ['--unsafe']
+  - id: check-toml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.2.5
+  hooks:
+  - id: codespell
+    additional_dependencies:
+      - tomli
+    exclude: 'cassettes/'
+
+# Removed black - using ruff-format instead to avoid formatting conflicts
+# - repo: https://github.com/psf/black
+#   rev: 24.8.0
+#   hooks:
+#   - id: black
+#     language_version: python3
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.12.11
+  hooks:
+  - id: ruff
+    args: [--fix, --unsafe-fixes]
+  - id: ruff-format
+
+- repo: local
+  hooks:
+  - id: mypy
+    name: mypy type checking
+    entry: python3 -m mypy garminconnect tests
+    types: [python]
+    language: system
+    pass_filenames: false

@@ -19,11 +19,17 @@ Uso normale (in GitHub Actions):
 import argparse
 import json
 import os
+import ssl
 import sys
 import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
+# bypass proxy SSL inspection (comune in reti ospedaliere)
+_ssl_ctx = ssl.create_default_context()
+_ssl_ctx.check_hostname = False
+_ssl_ctx.verify_mode = ssl.CERT_NONE
 
 CLIENT_ID     = os.environ.get("STRAVA_CLIENT_ID", "")
 CLIENT_SECRET = os.environ.get("STRAVA_CLIENT_SECRET", "")
@@ -42,7 +48,7 @@ def exchange_code(code: str):
         "code": code, "grant_type": "authorization_code",
     }).encode()
     req = urllib.request.Request("https://www.strava.com/oauth/token", data=data)
-    with urllib.request.urlopen(req) as r:
+    with urllib.request.urlopen(req, context=_ssl_ctx) as r:
         resp = json.loads(r.read())
     print(f"\nAtleta: {resp['athlete']['firstname']} {resp['athlete']['lastname']}")
     print(f"\n=== STRAVA_REFRESH_TOKEN ===\n{resp['refresh_token']}\n=== FINE ===\n")
@@ -57,7 +63,7 @@ def get_access_token() -> str:
         "refresh_token": REFRESH_TOKEN, "grant_type": "refresh_token",
     }).encode()
     req = urllib.request.Request("https://www.strava.com/oauth/token", data=data)
-    with urllib.request.urlopen(req) as r:
+    with urllib.request.urlopen(req, context=_ssl_ctx) as r:
         resp = json.loads(r.read())
     return resp["access_token"]
 
@@ -70,7 +76,7 @@ def fetch_activities(token: str, after_ts: int) -> list:
     while True:
         url = f"{BASE}/athlete/activities?after={after_ts}&per_page=100&page={page}"
         req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
-        with urllib.request.urlopen(req) as r:
+        with urllib.request.urlopen(req, context=_ssl_ctx) as r:
             batch = json.loads(r.read())
         if not batch:
             break
