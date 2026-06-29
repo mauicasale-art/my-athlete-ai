@@ -163,6 +163,11 @@ canvas{max-height:170px}
     <table class="t-table" id="t-table"></table>
   </div>
   <div class="card">
+    <h2>Efficienza aerobica — passo a FC 145-162 (Z2)</h2>
+    <canvas id="aerChart"></canvas>
+    <div id="aer-note" style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.6"></div>
+  </div>
+  <div class="card">
     <h2>Carico settimanale per tipo (km)</h2>
     <canvas id="typeChart"></canvas>
   </div>
@@ -384,13 +389,40 @@ function renderTRuns(acts) {
 
   // table
   const tbl=document.getElementById('t-table');
-  tbl.innerHTML=`<tr><th>Sessione</th><th>Data</th><th>Passo</th><th>Dist</th></tr>`+
+  tbl.innerHTML=`<tr><th>Sessione</th><th>Data</th><th>Passo</th><th>FC</th><th>Dist</th></tr>`+
     truns.map(a=>`<tr>
       <td>${pillHtml('T')} ${a.name}</td>
       <td>${a.start_local.slice(0,10)}</td>
       <td><strong>${paceStr(a.avg_speed)}/km</strong></td>
+      <td>${a.avg_hr?Math.round(a.avg_hr)+'♥':'—'}</td>
       <td>${(a.distance/1000).toFixed(1)} km</td>
     </tr>`).join('');
+}
+
+// ── Aerobic efficiency ────────────────────────────────────────────────────────
+function renderAerobicEfficiency(acts) {
+  const z2=acts.filter(a=>
+    a.sport_type==='Run' &&
+    a.avg_hr!=null && a.avg_hr>=145 && a.avg_hr<=162 &&
+    a.distance>=5000 &&
+    classify(a.name)!=='R'
+  );
+  if(!z2.length) return;
+
+  mkChart('aerChart',
+    z2.map(a=>a.start_local.slice(5,10)),
+    [{label:'min/km a FC 145-162', data:z2.map(a=>paceMin(a.avg_speed)), borderColor:'var(--teal)'}],
+    {reverse:true, min:5.5, max:8.5,
+      ticks:{callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}}
+    }
+  );
+
+  // delta summary
+  const first=z2[0], last=z2[z2.length-1];
+  const d1=paceMin(first.avg_speed), d2=paceMin(last.avg_speed);
+  const ds=Math.round((d1-d2)*60);
+  document.getElementById('aer-note').textContent=
+    `${z2.length} corse Z2 ≥5km · ${first.start_local.slice(0,7)} → ${last.start_local.slice(0,7)} · miglioramento: −${ds}s/km a parità FC`;
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -407,6 +439,7 @@ async function main() {
   // ── Strava charts ───────────────────────────────────────────────────────────
   renderMilestones(acts);
   renderTRuns(acts);
+  renderAerobicEfficiency(acts);
 
   // Weekly by type
   const wk=weeklyByType(acts);
@@ -439,9 +472,10 @@ async function main() {
   [...acts].filter(a=>a.sport_type==='Run').reverse().slice(0,12).forEach(a=>{
     const t=classify(a.name);
     const li=document.createElement('li'); li.className='act-item';
+    const hrStr=a.avg_hr?` · ${Math.round(a.avg_hr)}♥`:'';
     li.innerHTML=`${pillHtml(t)}
       <div class="act-name">${a.name}</div>
-      <div class="act-meta">${(a.distance/1000).toFixed(1)}km · ${paceStr(a.avg_speed)}/km<br>${a.start_local.slice(0,10)}</div>`;
+      <div class="act-meta">${(a.distance/1000).toFixed(1)}km · ${paceStr(a.avg_speed)}/km${hrStr}<br>${a.start_local.slice(0,10)}</div>`;
     ul.appendChild(li);
   });
 
