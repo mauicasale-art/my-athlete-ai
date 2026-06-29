@@ -214,6 +214,29 @@ def sink_files(all_wellness, all_activities, out_dir: Path, dry_run: bool):
             json.dumps(data, indent=2, default=str), encoding="utf-8"
         )
         print(f"  [json] {out_dir / 'data.json'}")
+        write_latest(all_wellness, all_activities, out_dir)
+
+
+def write_latest(all_wellness, all_activities, out_dir: Path):
+    today_w = all_wellness[0] if all_wellness else {}
+    lines = [
+        f"# Garmin latest — {today_w.get('date', 'n/d')}",
+        "",
+        "## Wellness oggi",
+    ]
+    lines.append(wellness_to_md(today_w).replace(f"# Garmin wellness {today_w.get('date','')}\n", "").strip())
+
+    recent_acts = [(d, a) for d, acts in all_activities for a in acts]
+    if recent_acts:
+        lines += ["", "## Attività recenti"]
+        for day, a in recent_acts[:5]:
+            _, md = activity_to_md(a, day)
+            lines.append(md.strip())
+            lines.append("")
+
+    path = out_dir / "latest.md"
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"  [latest] {path}")
 
 
 def sink_supabase(all_wellness, all_activities, dry_run: bool):
