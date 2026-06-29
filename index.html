@@ -7,78 +7,74 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #0f1117;
-    --card: #1a1d27;
-    --border: #2a2d3a;
-    --text: #e2e8f0;
-    --muted: #8892a4;
-    --green: #22c55e;
-    --yellow: #f59e0b;
-    --red: #ef4444;
-    --blue: #3b82f6;
-    --purple: #a855f7;
-    --orange: #f97316;
+    --bg: #0f1117; --card: #1a1d27; --border: #2a2d3a;
+    --text: #e2e8f0; --muted: #8892a4;
+    --green: #22c55e; --yellow: #f59e0b; --red: #ef4444;
+    --blue: #3b82f6; --purple: #a855f7; --orange: #f97316;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; }
 
-  header { padding: 20px 24px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
-  header .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  #last-update { font-size: 11px; color: var(--muted); text-align: right; }
+  header { padding: 18px 20px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  header h1 { font-size: 17px; font-weight: 700; }
+  header .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  #last-update { font-size: 11px; color: var(--muted); }
 
-  .grid { display: grid; gap: 14px; padding: 16px; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-  .grid-2 { display: grid; gap: 14px; padding: 0 16px 16px; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+  .section { padding: 6px 16px 2px; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; }
 
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-  .card h2 { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+  .grid { display: grid; gap: 12px; padding: 10px 16px; }
+  .g2 { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .g6 { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+  .card h2 { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
 
   /* Readiness */
-  .readiness-card { text-align: center; }
-  .semaforo { width: 64px; height: 64px; border-radius: 50%; margin: 8px auto; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 0 20px currentColor; }
-  .readiness-label { font-size: 18px; font-weight: 700; margin-top: 6px; }
-  .readiness-detail { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.6; }
+  .readiness-wrap { display: flex; align-items: center; gap: 14px; }
+  .semaforo { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+  .readiness-label { font-size: 20px; font-weight: 700; }
+  .readiness-detail { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
 
-  /* Stat pill */
-  .stat { }
-  .stat .value { font-size: 28px; font-weight: 700; line-height: 1; }
-  .stat .unit { font-size: 12px; color: var(--muted); margin-left: 3px; }
-  .stat .label { font-size: 11px; color: var(--muted); margin-top: 4px; }
-  .stat .delta { font-size: 11px; margin-top: 3px; }
+  /* Stat */
+  .stat .value { font-size: 26px; font-weight: 700; line-height: 1; }
+  .stat .unit { font-size: 12px; color: var(--muted); }
+  .stat .label { font-size: 10px; color: var(--muted); margin-top: 3px; }
+  .stat .delta { font-size: 10px; margin-top: 3px; }
 
   /* Goals */
-  .goal-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .goal-row:last-child { margin-bottom: 0; }
-  .goal-date { font-size: 11px; color: var(--muted); width: 90px; flex-shrink: 0; }
-  .goal-name { font-size: 13px; font-weight: 600; flex: 1; }
-  .goal-target { font-size: 11px; color: var(--muted); }
-  .countdown { font-size: 20px; font-weight: 700; color: var(--blue); text-align: right; min-width: 50px; }
-  .countdown span { font-size: 10px; color: var(--muted); display: block; font-weight: 400; }
-  .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 6px; }
-  .progress-bar .fill { height: 100%; border-radius: 2px; background: var(--blue); transition: width 0.5s; }
+  .goal { margin-bottom: 14px; }
+  .goal:last-child { margin-bottom: 0; }
+  .goal-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+  .goal-name { font-size: 13px; font-weight: 600; }
+  .goal-days { font-size: 20px; font-weight: 700; color: var(--blue); }
+  .goal-days span { font-size: 10px; color: var(--muted); font-weight: 400; margin-left: 2px; }
+  .goal-meta { font-size: 11px; color: var(--muted); }
+  .pbar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 5px; }
+  .pbar-fill { height: 100%; border-radius: 2px; }
 
-  /* Zone bar */
-  .zone-bars { display: flex; gap: 4px; height: 80px; align-items: flex-end; margin-top: 8px; }
-  .zone-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
-  .zone-bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 2px; transition: height 0.4s; }
-  .zone-label { font-size: 9px; color: var(--muted); }
-  .zone-pct { font-size: 10px; font-weight: 600; }
+  /* Milestone */
+  .mile-list { list-style: none; }
+  .mile-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .mile-item:last-child { border-bottom: none; }
+  .mile-icon { font-size: 16px; width: 22px; text-align: center; }
+  .mile-name { flex: 1; }
+  .mile-val { font-weight: 600; color: var(--blue); text-align: right; }
+  .mile-date { font-size: 10px; color: var(--muted); text-align: right; }
 
-  canvas { max-height: 200px; }
-
-  /* Activities list */
+  /* Activities */
   .act-list { list-style: none; }
-  .act-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .act-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); }
   .act-item:last-child { border-bottom: none; }
-  .act-type { font-size: 10px; background: var(--border); border-radius: 4px; padding: 2px 6px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; min-width: 28px; text-align: center; }
-  .act-name { font-size: 13px; font-weight: 500; flex: 1; }
-  .act-meta { font-size: 11px; color: var(--muted); text-align: right; line-height: 1.5; }
+  .act-badge { font-size: 9px; background: var(--border); border-radius: 4px; padding: 2px 5px; color: var(--muted); min-width: 24px; text-align: center; font-weight: 600; }
+  .act-name { flex: 1; font-size: 12px; }
+  .act-meta { font-size: 10px; color: var(--muted); text-align: right; line-height: 1.6; }
 
-  .section-title { padding: 8px 16px 4px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+  canvas { max-height: 180px; }
 
-  @media (max-width: 500px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-    .grid-2 { grid-template-columns: 1fr; }
+  @media (max-width: 480px) {
+    .g6 { grid-template-columns: repeat(2, 1fr); }
+    .g3 { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
@@ -87,313 +83,325 @@
 <header>
   <div>
     <h1>Maurizio — AI Coach</h1>
-    <div class="sub">Reale di Venaria · Turin City 2026</div>
+    <div class="sub">Reale di Venaria 11/10 · Turin City 29/11</div>
   </div>
   <div id="last-update">Caricamento...</div>
 </header>
 
-<!-- TOP STATS -->
-<div class="grid" id="top-stats">
-  <div class="card readiness-card" id="readiness-card">
+<!-- READINESS + STATS -->
+<div class="section">Oggi</div>
+<div class="grid g6" id="top-grid">
+  <div class="card" style="grid-column: span 2;" id="readiness-card">
     <h2>Readiness</h2>
-    <div class="semaforo" id="semaforo">⏳</div>
-    <div class="readiness-label" id="readiness-label">—</div>
-    <div class="readiness-detail" id="readiness-detail"></div>
+    <div class="readiness-wrap">
+      <div class="semaforo" id="semaforo">⏳</div>
+      <div>
+        <div class="readiness-label" id="readiness-label">—</div>
+        <div class="readiness-detail" id="readiness-detail"></div>
+      </div>
+    </div>
   </div>
-  <div class="card stat" id="hr-card">
-    <h2>FC Riposo</h2>
-    <div><span class="value" id="rhr-val">—</span><span class="unit">bpm</span></div>
-    <div class="label">Baseline 52 · soglia 58</div>
+  <div class="card stat"><h2>FC Riposo</h2>
+    <div><span class="value" id="rhr-val">—</span><span class="unit"> bpm</span></div>
+    <div class="label">baseline 52 · soglia 58</div>
     <div class="delta" id="rhr-delta"></div>
   </div>
-  <div class="card stat">
-    <h2>Body Battery</h2>
+  <div class="card stat"><h2>Body Battery</h2>
     <div><span class="value" id="bb-val">—</span><span class="unit">%</span></div>
-    <div class="label" id="bb-label">mattino → picco</div>
+    <div class="label" id="bb-label"></div>
   </div>
-  <div class="card stat">
-    <h2>Sonno</h2>
-    <div><span class="value" id="sleep-val">—</span><span class="unit">h</span></div>
-    <div class="label" id="sleep-score-label">score —</div>
+  <div class="card stat"><h2>Sonno</h2>
+    <div><span class="value" id="sleep-val">—</span><span class="unit"> h</span></div>
+    <div class="label" id="sleep-lbl"></div>
   </div>
-  <div class="card stat">
-    <h2>Stress medio</h2>
+  <div class="card stat"><h2>Stress / Passi</h2>
     <div><span class="value" id="stress-val">—</span></div>
-    <div class="label">ieri</div>
-  </div>
-  <div class="card stat">
-    <h2>Passi</h2>
-    <div><span class="value" id="steps-val">—</span></div>
-    <div class="label">ieri</div>
+    <div class="label" id="steps-lbl"></div>
   </div>
 </div>
 
 <!-- GOALS -->
-<div class="section-title">Obiettivi stagione</div>
-<div style="padding: 0 16px 8px;">
+<div class="section">Obiettivi</div>
+<div class="grid" style="grid-template-columns: 1fr;">
+  <div class="card" id="goals-card"></div>
+</div>
+
+<!-- MILESTONES -->
+<div class="section">Milestone stagione</div>
+<div class="grid" style="grid-template-columns: 1fr;">
   <div class="card">
-    <div class="goal-row" id="goal1"></div>
-    <div class="goal-row" id="goal2"></div>
+    <ul class="mile-list" id="mile-list"></ul>
   </div>
 </div>
 
-<!-- CHARTS -->
-<div class="section-title">Trend 30 giorni</div>
-<div class="grid-2">
-  <div class="card">
-    <h2>FC Riposo</h2>
-    <canvas id="hrChart"></canvas>
-  </div>
-  <div class="card">
-    <h2>Body Battery (picco giornaliero)</h2>
-    <canvas id="bbChart"></canvas>
-  </div>
-  <div class="card">
-    <h2>Sleep Score</h2>
-    <canvas id="sleepChart"></canvas>
-  </div>
-  <div class="card">
-    <h2>Carico settimanale (km)</h2>
-    <canvas id="loadChart"></canvas>
-  </div>
+<!-- TREND GARMIN -->
+<div class="section">Trend 30 giorni (Garmin)</div>
+<div class="grid g2">
+  <div class="card"><h2>FC Riposo</h2><canvas id="hrChart"></canvas></div>
+  <div class="card"><h2>Body Battery picco</h2><canvas id="bbChart"></canvas></div>
+  <div class="card"><h2>Sleep Score</h2><canvas id="sleepChart"></canvas></div>
+  <div class="card"><h2>Stress medio</h2><canvas id="stressChart"></canvas></div>
 </div>
 
-<!-- ACTIVITIES -->
-<div class="section-title">Attività recenti</div>
-<div style="padding: 0 16px 24px;">
-  <div class="card">
-    <ul class="act-list" id="act-list"></ul>
-  </div>
+<!-- PROGRESSIONE STRAVA -->
+<div class="section">Progressione da febbraio (Strava)</div>
+<div class="grid g2">
+  <div class="card"><h2>Carico settimanale (km)</h2><canvas id="loadChart"></canvas></div>
+  <div class="card"><h2>Passo medio corse >5km</h2><canvas id="paceChart"></canvas></div>
+  <div class="card"><h2>Cadenza (passi/min)</h2><canvas id="cadenceChart"></canvas></div>
+  <div class="card"><h2>Effort relativo</h2><canvas id="effortChart"></canvas></div>
+</div>
+
+<!-- ATTIVITÀ RECENTI -->
+<div class="section">Attività recenti</div>
+<div class="grid" style="grid-template-columns: 1fr; padding-bottom: 24px;">
+  <div class="card"><ul class="act-list" id="act-list"></ul></div>
 </div>
 
 <script>
-const DATA_URL = 'https://raw.githubusercontent.com/mauicasale-art/my-athlete-ai/main/garmin/data.json';
+const GARMIN_URL = 'https://raw.githubusercontent.com/mauicasale-art/my-athlete-ai/main/garmin/data.json';
+const STRAVA_URL = 'https://raw.githubusercontent.com/mauicasale-art/my-athlete-ai/main/strava_activities.json';
 
 // ── Goals ──────────────────────────────────────────────────────────────────────
 const GOALS = [
   { name: 'Reale di Venaria', date: '2026-10-11', target: '1:42:00', pace: '4:51/km', color: '#3b82f6' },
-  { name: 'Turin City', date: '2026-11-29', target: 'sub 1:40', pace: '4:44/km', color: '#a855f7' },
+  { name: 'Turin City Half Marathon', date: '2026-11-29', target: 'sub 1:40', pace: '4:44/km', color: '#a855f7' },
 ];
+const TRAIN_START = new Date('2026-02-23');
 
-function daysUntil(dateStr) {
-  const d = new Date(dateStr);
-  const now = new Date();
-  now.setHours(0,0,0,0);
-  return Math.ceil((d - now) / 86400000);
+function daysUntil(ds) {
+  const d = new Date(ds); const n = new Date(); n.setHours(0,0,0,0);
+  return Math.ceil((d - n) / 86400000);
 }
 
-function renderGoals(wellness) {
-  const startDate = new Date('2026-05-01');
-  GOALS.forEach((g, i) => {
-    const el = document.getElementById(`goal${i+1}`);
+function renderGoals() {
+  const el = document.getElementById('goals-card');
+  el.innerHTML = GOALS.map(g => {
     const days = daysUntil(g.date);
-    const total = Math.ceil((new Date(g.date) - startDate) / 86400000);
+    const total = Math.ceil((new Date(g.date) - TRAIN_START) / 86400000);
     const elapsed = total - days;
     const pct = Math.min(100, Math.round(elapsed / total * 100));
-    el.innerHTML = `
-      <div style="flex:1">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-          <span class="goal-name">${g.name}</span>
-          <span class="goal-target">${g.target} · ${g.pace}</span>
-          <div class="countdown">${days}<span>giorni</span></div>
+    return `<div class="goal">
+      <div class="goal-header">
+        <div>
+          <div class="goal-name">${g.name}</div>
+          <div class="goal-meta">${g.date} · target ${g.target} · ${g.pace}</div>
         </div>
-        <div class="progress-bar"><div class="fill" style="width:${pct}%;background:${g.color}"></div></div>
-        <div style="font-size:10px;color:var(--muted);margin-top:3px;">${g.date} · ${pct}% del piano completato</div>
-      </div>`;
-  });
+        <div class="goal-days">${days}<span>giorni</span></div>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${g.color}"></div></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:3px;">${pct}% del piano completato</div>
+    </div>`;
+  }).join('');
 }
 
 // ── Readiness ──────────────────────────────────────────────────────────────────
-function calcReadiness(today, prev7) {
-  const rhr = today.resting_hr;
-  const bb = today.body_battery_end;
-  const sleep = today.sleep_score;
-
-  const reasons = [];
-  let score = 0;
-
+function calcReadiness(today) {
+  const rhr = today.resting_hr, bb = today.body_battery_end, sl = today.sleep_score;
+  const reasons = []; let score = 0;
   if (rhr != null) {
     if (rhr <= 55) score += 2;
-    else if (rhr <= 58) { score += 1; reasons.push(`FC ${rhr} bpm (soglia 58)`); }
-    else { score -= 2; reasons.push(`FC ${rhr} bpm ⚠️ sopra soglia`); }
+    else if (rhr <= 58) { score += 1; reasons.push(`FC ${rhr} bpm`); }
+    else { score -= 2; reasons.push(`FC ${rhr} bpm ⚠️`); }
   }
   if (bb != null) {
     if (bb >= 65) score += 2;
-    else if (bb >= 45) { score += 1; reasons.push(`Body Battery ${bb}%`); }
-    else { score -= 2; reasons.push(`Body Battery ${bb}% ⚠️ bassa`); }
+    else if (bb >= 45) { score += 1; reasons.push(`BB ${bb}%`); }
+    else { score -= 2; reasons.push(`BB ${bb}% ⚠️`); }
   }
-  if (sleep != null) {
-    if (sleep >= 65) score += 2;
-    else if (sleep >= 50) { score += 1; reasons.push(`Sleep score ${sleep}`); }
-    else { score -= 2; reasons.push(`Sleep score ${sleep} ⚠️ insufficiente`); }
+  if (sl != null) {
+    if (sl >= 65) score += 2;
+    else if (sl >= 50) { score += 1; reasons.push(`Sleep ${sl}`); }
+    else { score -= 2; reasons.push(`Sleep ${sl} ⚠️`); }
   }
-
   if (score >= 5) return { level: 'VERDE', emoji: '🟢', color: 'var(--green)', reasons };
   if (score >= 2) return { level: 'GIALLO', emoji: '🟡', color: 'var(--yellow)', reasons };
   return { level: 'ROSSO', emoji: '🔴', color: 'var(--red)', reasons };
 }
 
-// ── Charts ─────────────────────────────────────────────────────────────────────
-const CHART_OPTS = (label, color) => ({
-  type: 'line',
-  options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { ticks: { color: '#8892a4', font: { size: 9 }, maxTicksLimit: 8 }, grid: { color: '#2a2d3a' } },
-      y: { ticks: { color: '#8892a4', font: { size: 10 } }, grid: { color: '#2a2d3a' } }
-    },
-    elements: { point: { radius: 2 }, line: { tension: 0.3 } }
-  }
-});
-
-function makeChart(id, labels, data, label, color, min, max) {
-  const ctx = document.getElementById(id).getContext('2d');
-  const opts = CHART_OPTS(label, color);
-  opts.data = {
-    labels,
-    datasets: [{
-      label,
-      data,
-      borderColor: color,
-      backgroundColor: color + '22',
-      fill: true,
-      borderWidth: 2,
-    }]
-  };
-  if (min !== undefined) opts.options.scales.y.min = min;
-  if (max !== undefined) opts.options.scales.y.max = max;
-  new Chart(ctx, opts);
+// ── Pace ───────────────────────────────────────────────────────────────────────
+function paceStr(speedMs) {
+  const secKm = 1000 / speedMs;
+  const m = Math.floor(secKm / 60), s = Math.round(secKm % 60).toString().padStart(2,'0');
+  return `${m}:${s}`;
+}
+function paceMin(speedMs) {
+  return Math.round(1000 / speedMs / 60 * 100) / 100;
 }
 
-// ── Activities ─────────────────────────────────────────────────────────────────
-function actLabel(name) {
-  if (/^R\d/i.test(name) || /ripetute/i.test(name)) return 'R';
-  if (/^T\d/i.test(name) || /tempo/i.test(name)) return 'T';
-  if (/^L\d/i.test(name) || /lungo/i.test(name)) return 'L';
-  if (/^F/i.test(name) || /facile/i.test(name)) return 'F';
+// ── Chart factory ──────────────────────────────────────────────────────────────
+function lineChart(id, labels, datasets, yOpts = {}) {
+  const ctx = document.getElementById(id).getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets: datasets.map(d => ({
+      ...d, borderWidth: 2, pointRadius: 3, tension: 0.3,
+      fill: datasets.length === 1,
+      backgroundColor: datasets.length === 1 ? d.borderColor + '18' : 'transparent',
+    }))},
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: { legend: { display: datasets.length > 1, labels: { color: '#8892a4', font: { size: 10 }, boxWidth: 10, padding: 8 } } },
+      scales: {
+        x: { ticks: { color: '#8892a4', font: { size: 9 }, maxTicksLimit: 8 }, grid: { color: '#2a2d3a' } },
+        y: { ticks: { color: '#8892a4', font: { size: 9 } }, grid: { color: '#2a2d3a' }, ...yOpts },
+      },
+    }
+  });
+}
+
+// ── Weekly km from Strava ──────────────────────────────────────────────────────
+function weeklyKmStrava(acts) {
+  const weeks = {};
+  acts.filter(a => a.sport_type === 'Run').forEach(a => {
+    const d = new Date(a.start_local);
+    const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay()+6)%7));
+    const key = mon.toISOString().slice(0,10);
+    weeks[key] = (weeks[key] || 0) + a.distance / 1000;
+  });
+  const sorted = Object.entries(weeks).sort((a,b) => a[0].localeCompare(b[0]));
+  return { labels: sorted.map(([k]) => k.slice(5)), data: sorted.map(([,v]) => Math.round(v*10)/10) };
+}
+
+// ── Milestones ─────────────────────────────────────────────────────────────────
+function renderMilestones(acts) {
+  const runs = acts.filter(a => a.sport_type === 'Run');
+  const milestones = [];
+
+  // Prima corsa
+  const first = runs[0];
+  if (first) milestones.push({ icon: '🏃', name: 'Prima corsa', val: (first.distance/1000).toFixed(1)+' km', date: first.start_local.slice(0,10) });
+
+  // 10km race TuttaDritta
+  const race10 = runs.find(a => a.name.includes('TuttaDritta'));
+  if (race10) milestones.push({ icon: '🏁', name: '10km TuttaDritta (gara)', val: paceStr(race10.avg_speed)+'/km · '+Math.floor(race10.moving_time/60)+':'+(race10.moving_time%60).toString().padStart(2,'0'), date: race10.start_local.slice(0,10) });
+
+  // Prima mezza
+  const mezza = runs.find(a => a.distance > 20000);
+  if (mezza) milestones.push({ icon: '🏅', name: 'Prima mezza maratona', val: paceStr(mezza.avg_speed)+'/km · '+Math.floor(mezza.moving_time/3600)+'h'+Math.floor((mezza.moving_time%3600)/60)+'m', date: mezza.start_local.slice(0,10) });
+
+  // PB passo (miglior passo su distanza ≥8km)
+  const long = runs.filter(a => a.distance >= 8000 && a.moving_time > 0);
+  if (long.length) {
+    const fastest = long.reduce((best, a) => a.avg_speed > best.avg_speed ? a : best);
+    milestones.push({ icon: '⚡', name: 'Passo migliore (≥8km)', val: paceStr(fastest.avg_speed)+'/km', date: fastest.start_local.slice(0,10) });
+  }
+
+  // Volume settimana picco
+  const wkm = weeklyKmStrava(acts);
+  const peakIdx = wkm.data.indexOf(Math.max(...wkm.data));
+  if (peakIdx >= 0) milestones.push({ icon: '📈', name: 'Settimana di picco', val: wkm.data[peakIdx]+' km', date: 'Sett. '+wkm.labels[peakIdx] });
+
+  // Target gara
+  milestones.push({ icon: '🎯', name: 'Target Venaria (4:51/km)', val: '1:42:00', date: '11 ott 2026' });
+
+  const ul = document.getElementById('mile-list');
+  milestones.forEach(m => {
+    const li = document.createElement('li'); li.className = 'mile-item';
+    li.innerHTML = `<span class="mile-icon">${m.icon}</span>
+      <span class="mile-name">${m.name}</span>
+      <div><div class="mile-val">${m.val}</div><div class="mile-date">${m.date}</div></div>`;
+    ul.appendChild(li);
+  });
+}
+
+// ── Activity badge ─────────────────────────────────────────────────────────────
+function badge(name) {
+  if (/\bR\d|\bR$/i.test(name) || /ripetut/i.test(name)) return 'R';
+  if (/\bT\d|\bT$/i.test(name) || /tempo/i.test(name)) return 'T';
+  if (/\bL\d|\bL$/i.test(name) || /lungo/i.test(name)) return 'L';
+  if (/\bF\d|\bF$/i.test(name) || /recupero|facile/i.test(name)) return 'F';
   if (/camminat/i.test(name)) return '🚶';
   return '🏃';
 }
 
-function formatPace(distKm, durMin) {
-  if (!distKm || !durMin) return '';
-  const secsPerKm = (durMin * 60) / distKm;
-  const m = Math.floor(secsPerKm / 60);
-  const s = Math.round(secsPerKm % 60).toString().padStart(2, '0');
-  return `${m}:${s}/km`;
-}
-
-// ── Weekly load ────────────────────────────────────────────────────────────────
-function weeklyKm(activities) {
-  const weeks = {};
-  activities.forEach(({ date, list }) => {
-    const d = new Date(date);
-    const mon = new Date(d);
-    mon.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-    const key = mon.toISOString().slice(0, 10);
-    if (!weeks[key]) weeks[key] = 0;
-    list.forEach(a => {
-      if (a.activityType?.typeKey === 'running') {
-        weeks[key] += (a.distance || 0) / 1000;
-      }
-    });
-  });
-  const sorted = Object.entries(weeks).sort((a, b) => a[0].localeCompare(b[0]));
-  return {
-    labels: sorted.map(([k]) => k.slice(5)),
-    data: sorted.map(([, v]) => Math.round(v * 10) / 10),
-  };
-}
-
 // ── Main ───────────────────────────────────────────────────────────────────────
 async function main() {
-  let raw;
-  try {
-    const res = await fetch(DATA_URL + '?t=' + Date.now());
-    raw = await res.json();
-  } catch (e) {
-    document.getElementById('last-update').textContent = 'Errore caricamento dati';
-    return;
-  }
+  renderGoals();
 
-  const wellness = [...raw.wellness].sort((a, b) => b.date.localeCompare(a.date));
-  const activities = [...(raw.activities || [])].sort((a, b) => b.date.localeCompare(a.date));
+  const [garminRes, stravaRes] = await Promise.all([
+    fetch(GARMIN_URL + '?t=' + Date.now()).then(r => r.json()).catch(() => null),
+    fetch(STRAVA_URL + '?t=' + Date.now()).then(r => r.json()).catch(() => []),
+  ]);
 
-  const today = wellness[0] || {};
-  const yesterday = wellness[1] || {};
+  // ── Strava charts ───────────────────────────────────────────────────────────
+  const acts = stravaRes || [];
+  renderMilestones(acts);
 
-  // Header
-  document.getElementById('last-update').textContent = `Aggiornato: ${today.date || '—'}`;
+  const wkm = weeklyKmStrava(acts);
+  lineChart('loadChart', wkm.labels, [{ label: 'km', data: wkm.data, borderColor: '#22c55e' }]);
 
-  // Readiness
-  const r = calcReadiness(today, wellness.slice(1, 8));
+  const runs5 = acts.filter(a => a.sport_type === 'Run' && a.distance >= 5000).slice(-30);
+  lineChart('paceChart',
+    runs5.map(a => a.start_local.slice(5,10)),
+    [{ label: 'min/km', data: runs5.map(a => Math.round(paceMin(a.avg_speed)*100)/100), borderColor: '#3b82f6' }],
+    { reverse: true, min: 4.5, max: 8 }
+  );
+
+  const cadActs = acts.filter(a => a.sport_type === 'Run' && a.avg_cadence).slice(-30);
+  lineChart('cadenceChart',
+    cadActs.map(a => a.start_local.slice(5,10)),
+    [{ label: 'spm', data: cadActs.map(a => Math.round(a.avg_cadence * 2)), borderColor: '#f97316' }],
+    { min: 130, max: 170 }
+  );
+
+  const effortActs = acts.filter(a => a.relative_effort).slice(-20);
+  lineChart('effortChart',
+    effortActs.map(a => a.start_local.slice(5,10)),
+    [{ label: 'effort', data: effortActs.map(a => a.relative_effort), borderColor: '#a855f7' }]
+  );
+
+  // ── Activities list ─────────────────────────────────────────────────────────
+  const ul = document.getElementById('act-list');
+  [...acts].reverse().slice(0, 12).forEach(a => {
+    const pace = paceStr(a.avg_speed);
+    const distKm = (a.distance/1000).toFixed(1);
+    const li = document.createElement('li'); li.className = 'act-item';
+    li.innerHTML = `
+      <span class="act-badge">${badge(a.name)}</span>
+      <div class="act-name">${a.name}</div>
+      <div class="act-meta">${distKm} km · ${pace}/km<br>${a.start_local.slice(0,10)}</div>`;
+    ul.appendChild(li);
+  });
+
+  // ── Garmin ─────────────────────────────────────────────────────────────────
+  if (!garminRes) { document.getElementById('last-update').textContent = 'Garmin non disponibile'; return; }
+
+  const wellness = [...garminRes.wellness].sort((a,b) => b.date.localeCompare(a.date));
+  const today = wellness[0] || {}, yesterday = wellness[1] || {};
+  document.getElementById('last-update').textContent = 'Garmin: ' + (today.date || '—');
+
+  const r = calcReadiness(today);
   const sem = document.getElementById('semaforo');
-  sem.textContent = r.emoji;
-  sem.style.color = r.color;
-  sem.style.background = r.color + '22';
+  sem.textContent = r.emoji; sem.style.background = r.color + '22';
   document.getElementById('readiness-label').textContent = r.level;
   document.getElementById('readiness-label').style.color = r.color;
   document.getElementById('readiness-detail').textContent = r.reasons.length ? r.reasons.join(' · ') : 'Tutti i parametri ok';
 
-  // Stats
   document.getElementById('rhr-val').textContent = today.resting_hr ?? '—';
-  const rhrDelta = today.resting_hr && yesterday.resting_hr ? today.resting_hr - yesterday.resting_hr : null;
-  if (rhrDelta !== null) {
-    const d = document.getElementById('rhr-delta');
-    d.textContent = (rhrDelta > 0 ? '▲' : '▼') + ' ' + Math.abs(rhrDelta) + ' bpm vs ieri';
-    d.style.color = rhrDelta > 2 ? 'var(--red)' : rhrDelta < -2 ? 'var(--green)' : 'var(--muted)';
+  const d = today.resting_hr && yesterday.resting_hr ? today.resting_hr - yesterday.resting_hr : null;
+  if (d !== null) {
+    const el = document.getElementById('rhr-delta');
+    el.textContent = (d > 0 ? '▲' : '▼') + Math.abs(d) + ' vs ieri';
+    el.style.color = d > 2 ? 'var(--red)' : d < -2 ? 'var(--green)' : 'var(--muted)';
   }
 
-  const bb = today.body_battery_end;
-  document.getElementById('bb-val').textContent = bb ?? '—';
-  document.getElementById('bb-label').textContent = `picco ${bb ?? '—'}% · base ${today.body_battery_start ?? '—'}%`;
+  document.getElementById('bb-val').textContent = today.body_battery_end ?? '—';
+  document.getElementById('bb-label').textContent = `base ${today.body_battery_start ?? '—'}% → picco ${today.body_battery_end ?? '—'}%`;
 
-  const sleepH = today.sleep_seconds ? Math.round(today.sleep_seconds / 360) / 10 : null;
-  document.getElementById('sleep-val').textContent = sleepH ?? '—';
-  document.getElementById('sleep-score-label').textContent = `score ${today.sleep_score ?? '—'}`;
+  const h = today.sleep_seconds ? Math.round(today.sleep_seconds/360)/10 : null;
+  document.getElementById('sleep-val').textContent = h ?? '—';
+  document.getElementById('sleep-lbl').textContent = `score ${today.sleep_score ?? '—'}`;
 
   document.getElementById('stress-val').textContent = today.stress_avg ?? '—';
-  document.getElementById('steps-val').textContent = today.steps ? today.steps.toLocaleString('it') : '—';
+  document.getElementById('steps-lbl').textContent = `${(today.steps || 0).toLocaleString('it')} passi`;
 
-  // Goals
-  renderGoals(wellness);
-
-  // Charts — last 30 days
-  const w30 = wellness.slice(0, 30).reverse();
-  const labels30 = w30.map(d => d.date.slice(5));
-
-  makeChart('hrChart', labels30, w30.map(d => d.resting_hr), 'FC riposo', '#ef4444', 44, 70);
-  makeChart('bbChart', labels30, w30.map(d => d.body_battery_end), 'Body Battery', '#3b82f6', 0, 100);
-  makeChart('sleepChart', labels30, w30.map(d => d.sleep_score), 'Sleep score', '#a855f7', 0, 100);
-
-  const wkm = weeklyKm(activities);
-  makeChart('loadChart', wkm.labels, wkm.data, 'km/settimana', '#22c55e');
-
-  // Activities list
-  const allActs = activities.flatMap(({ date, list }) =>
-    list.map(a => ({ ...a, _date: date }))
-  ).sort((a, b) => (b.startTimeLocal || b._date).localeCompare(a.startTimeLocal || a._date));
-
-  const ul = document.getElementById('act-list');
-  allActs.slice(0, 10).forEach(a => {
-    const distKm = (a.distance || 0) / 1000;
-    const durMin = (a.duration || 0) / 60;
-    const pace = formatPace(distKm, durMin);
-    const name = a.activityName || 'Attività';
-    const label = actLabel(name);
-    const li = document.createElement('li');
-    li.className = 'act-item';
-    li.innerHTML = `
-      <span class="act-type">${label}</span>
-      <div class="act-name">${name}</div>
-      <div class="act-meta">
-        ${distKm > 0 ? distKm.toFixed(1) + ' km' : ''} ${pace ? '· ' + pace : ''}<br>
-        FC ${a.averageHR ? Math.round(a.averageHR) : '—'} avg · ${a._date}
-      </div>`;
-    ul.appendChild(li);
-  });
+  const w30 = wellness.slice(0,30).reverse();
+  const lbl30 = w30.map(d => d.date.slice(5));
+  lineChart('hrChart', lbl30, [{data: w30.map(d=>d.resting_hr), borderColor:'#ef4444', label:'bpm'}], {min:44,max:70});
+  lineChart('bbChart', lbl30, [{data: w30.map(d=>d.body_battery_end), borderColor:'#3b82f6', label:'%'}], {min:0,max:100});
+  lineChart('sleepChart', lbl30, [{data: w30.map(d=>d.sleep_score), borderColor:'#a855f7', label:'score'}], {min:0,max:100});
+  lineChart('stressChart', lbl30, [{data: w30.map(d=>d.stress_avg), borderColor:'#f59e0b', label:'stress'}], {min:0,max:100});
 }
 
 main();
