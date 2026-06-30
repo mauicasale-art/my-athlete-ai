@@ -398,6 +398,16 @@ function renderGoals(){
 }
 
 // ── Chart factory ──────────────────────────────────────────────────────────────
+// Regressione lineare — restituisce array di valori trend (salta null)
+function linReg(ys) {
+  const pts = ys.map((y,i)=>({i,y})).filter(p=>p.y!=null);
+  if (pts.length < 2) return ys.map(()=>null);
+  const n=pts.length, mx=pts.reduce((s,p)=>s+p.i,0)/n, my=pts.reduce((s,p)=>s+p.y,0)/n;
+  const m=pts.reduce((s,p)=>s+(p.i-mx)*(p.y-my),0)/pts.reduce((s,p)=>s+(p.i-mx)**2,0)||0;
+  const b=my-m*mx;
+  return ys.map((_,i)=>Math.round((m*i+b)*1000)/1000);
+}
+
 // Altezze fisse per tipo di grafico — i piccoli (wellness, donut) restano compatti
 const CHART_H = {typeChart:260, hrChart:240, bbChart:240, slpChart:240, strChart:240};
 function fmtPaceTooltip(v){const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}/km`;}
@@ -416,9 +426,10 @@ function mkChart(id, labels, datasets, yOpts={}, type='line', fmtTooltip=null) {
   new Chart(canvas.getContext('2d'), {
     type,
     data:{labels, datasets: datasets.map(d=>({
-      ...d, borderWidth:2, pointRadius:3, tension:0.3,
+      borderWidth:2, pointRadius:3, tension:0.3,
       fill: type==='line' && datasets.length===1,
       backgroundColor: type==='line' && datasets.length===1 ? d.borderColor+'15' : d.backgroundColor||d.borderColor+'cc',
+      ...d,  // d sovrascrive i default sopra (es. pointRadius:0 per trend line)
     }))},
     options:{
       responsive:true, maintainAspectRatio:false,
@@ -837,51 +848,49 @@ async function main() {
     {label:'Altro',data:wk.X,borderColor:'#8892a4',backgroundColor:'#8892a466'},
   ], {stacked:true}, 'bar');
 
-  // Pace trend (>5km) — usa passo effort-only per T e R da biomech
+  // Pace trend (>5km) — scatter + trend line tratteggiata
   const runs5=acts.filter(a=>a.sport_type==='Run'&&a.distance>=5000);
-  const paceColors = runs5.map(a=>{
+  const actType=a=>{
     const t=classify(a.name);
-    return t==='R'?'#ef4444':t==='T'?'#3b82f6':t==='L'?'#22c55e':'#f97316';
+    // fallback: se Strava non classifica, prova label biomech
+    if(t==='X'||t==='F'){const bio=bioByDate[a.start_local.slice(0,10)];if(bio)return classify(bio.label);}
+    return t;
+  };
+  const paceColors=runs5.map(a=>{const t=actType(a);return t==='R'?'#ef4444':t==='T'?'#3b82f6':t==='L'?'#22c55e':'#f97316';});
+  const paceData=runs5.map(a=>{
+    const d=a.start_local.slice(0,10), t=actType(a), bio=bioByDate[d];
+    if(bio&&(t==='T'||t==='R')) return bio.effort_pace_min;
+    return paceMin(a.avg_speed);
   });
   mkChart('paceChart',
     runs5.map(a=>fmtDate(a.start_local)),
-    [{
-      label:'min/km',
-      data:runs5.map(a=>{
-        const d=a.start_local.slice(0,10);
-        const t=classify(a.name);
-        const bio=bioByDate[d];
-        // Per T e R usa passo effort-only da biomech se disponibile
-        if(bio && (t==='T'||t==='R')) return bio.effort_pace_min;
-        return paceMin(a.avg_speed);
-      }),
-      borderColor: paceColors,
-      pointBackgroundColor: paceColors,
-      segment:{borderColor: ctx=>paceColors[ctx.p1DataIndex]||'#f97316'},
-    }],
+    [
+      { label:'min/km', data:paceData, borderColor:paceColors, pointBackgroundColor:paceColors,
+        showLine:false, pointRadius:5, pointHoverRadius:7 },
+      { label:'trend', data:linReg(paceData), borderColor:'rgba(249,115,22,0.35)',
+        borderDash:[6,4], showLine:true, pointRadius:0, fill:false, borderWidth:1.5 },
+    ],
     {reverse:true,
       ticks:{callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}}
     }, 'line', fmtPaceTooltip
   );
 
-  // Cadenza — solo corse >= 5km; per T/R usa cadenza effort-only da biomech
+  // Cadenza — scatter + trend line; effort-only per T/R
   const cads=acts.filter(a=>a.sport_type==='Run'&&a.avg_cadence&&a.avg_cadence>100&&!/carletta/i.test(a.name));
-  const cadColors=cads.map(a=>{const t=classify(a.name);return t==='R'?'#ef4444':t==='T'?'#3b82f6':t==='L'?'#22c55e':'#f97316';});
+  const cadColors=cads.map(a=>{const t=actType(a);return t==='R'?'#ef4444':t==='T'?'#3b82f6':t==='L'?'#22c55e':'#f97316';});
+  const cadData=cads.map(a=>{
+    const d=a.start_local.slice(0,10), t=actType(a), bio=bioByDate[d];
+    if(bio?.effort_cad&&(t==='T'||t==='R')) return bio.effort_cad;
+    return Math.round(a.avg_cadence);
+  });
   mkChart('cadChart',
     cads.map(a=>fmtDate(a.start_local)),
-    [{
-      label:'spm',
-      data:cads.map(a=>{
-        const d=a.start_local.slice(0,10);
-        const t=classify(a.name);
-        const bio=bioByDate[d];
-        if(bio?.effort_cad&&(t==='T'||t==='R')) return bio.effort_cad;
-        return Math.round(a.avg_cadence);
-      }),
-      borderColor:cadColors,
-      pointBackgroundColor:cadColors,
-      segment:{borderColor:ctx=>cadColors[ctx.p1DataIndex]||'#f97316'},
-    }],
+    [
+      { label:'spm', data:cadData, borderColor:cadColors, pointBackgroundColor:cadColors,
+        showLine:false, pointRadius:5, pointHoverRadius:7 },
+      { label:'trend', data:linReg(cadData), borderColor:'rgba(20,184,166,0.35)',
+        borderDash:[6,4], showLine:true, pointRadius:0, fill:false, borderWidth:1.5 },
+    ],
     {ticks:{callback:v=>v+' spm'}}
   );
 
