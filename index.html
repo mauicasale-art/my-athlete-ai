@@ -279,7 +279,10 @@ function renderProiezione(bio) {
   const tRuns = bio?.t_runs || [];
   if (!tRuns.length) return;
 
-  const bestT = tRuns.reduce((b, t) => t.tempo_pace_s < b.tempo_pace_s ? t : b);
+  // Usa la T-run più recente che è un vero test soglia (exclude_threshold != true)
+  const threshRuns = tRuns.filter(t => !t.exclude_threshold).sort((a,b)=>a.date>b.date?1:-1);
+  if (!threshRuns.length) return;
+  const bestT = threshRuns.at(-1);
   const hmDist = 21.0975;
   const hmConS  = Math.round(bestT.tempo_pace_s * 1.055 * hmDist);
   const hmOptS  = Math.round(bestT.tempo_pace_s * 1.040 * hmDist);
@@ -457,9 +460,9 @@ function weeklyByType(acts) {
     weeks[key][t in weeks[key]?t:'X']+=(a.distance||0)/1000;
   });
   const sorted=Object.entries(weeks).sort((a,b)=>a[0].localeCompare(b[0]));
-  const labels=sorted.map(([k])=>fmtDate(k));
   return {
-    labels,
+    labels:sorted.map(([k])=>fmtDate(k)),
+    dates:sorted.map(([k])=>k),  // ISO lunedì, per tooltip range
     R:sorted.map(([,v])=>Math.round(v.R*10)/10),
     T:sorted.map(([,v])=>Math.round(v.T*10)/10),
     L:sorted.map(([,v])=>Math.round(v.L*10)/10),
@@ -510,68 +513,72 @@ function renderTRuns(acts, bio) {
   if(!truns.length) return;
 
   const tRunData = bio?.t_runs || [];
+  // Sessioni soglia vere (exclude_threshold:true = corsa con amica o simili)
+  const threshData = tRunData.filter(t => !t.exclude_threshold);
 
-  if(tRunData.length) {
-    // Grafico con doppio asse: passo reale (sinistra) + FC (destra)
-    const labels = tRunData.map(t=>fmtDate(t.date));
-    const paceData = tRunData.map(t=>sToMin(t.tempo_pace_s));
-    const hrData = tRunData.map(t=>t.tempo_hr);
+  if(threshData.length) {
+    const labels = threshData.map(t=>fmtDate(t.date));
+    const paceVals = threshData.map(t=>sToMin(t.tempo_pace_s));
+    const hrVals   = threshData.map(t=>t.tempo_hr);
 
-    new Chart(document.getElementById('tChart').getContext('2d'), {
+    // Wrap in div posizionato per maintainAspectRatio:false
+    const canvas = document.getElementById('tChart');
+    if (!canvas.parentElement.dataset.chartWrap) {
+      const wrap = document.createElement('div');
+      wrap.dataset.chartWrap = '1';
+      wrap.style.cssText = 'position:relative;height:480px;width:100%';
+      canvas.parentNode.insertBefore(wrap, canvas);
+      wrap.appendChild(canvas);
+    }
+
+    new Chart(canvas.getContext('2d'), {
       type: 'line',
       data: {
         labels,
         datasets: [
-          {
-            label: 'Passo sforzo (min/km)',
-            data: paceData,
-            borderColor: 'var(--blue)',
-            backgroundColor: '#3b82f615',
-            yAxisID: 'yPace',
-            borderWidth: 2, pointRadius: 6, tension: 0.2,
-          },
-          {
-            label: 'FC sforzo (bpm)',
-            data: hrData,
-            borderColor: 'var(--red)',
-            backgroundColor: '#ef444415',
-            yAxisID: 'yHR',
-            borderWidth: 2, pointRadius: 6, tension: 0.2,
-            borderDash: [4,3],
-          },
+          // scatter punti passo
+          { label:'Passo sforzo', data:paceVals, yAxisID:'yPace',
+            borderColor:'#3b82f6', pointBackgroundColor:'#3b82f6',
+            showLine:false, pointRadius:7, pointHoverRadius:9 },
+          // trend passo tratteggiata
+          { label:'Trend passo', data:linReg(paceVals), yAxisID:'yPace',
+            borderColor:'rgba(59,130,246,0.3)', borderDash:[6,4],
+            showLine:true, pointRadius:0, fill:false, borderWidth:1.5 },
+          // scatter punti FC
+          { label:'FC sforzo', data:hrVals, yAxisID:'yHR',
+            borderColor:'#ef4444', pointBackgroundColor:'#ef4444',
+            showLine:false, pointRadius:7, pointHoverRadius:9 },
+          // trend FC tratteggiata
+          { label:'Trend FC', data:linReg(hrVals), yAxisID:'yHR',
+            borderColor:'rgba(239,68,68,0.3)', borderDash:[6,4],
+            showLine:true, pointRadius:0, fill:false, borderWidth:1.5 },
         ],
       },
       options: {
-        responsive: true, maintainAspectRatio: true,
+        responsive:true, maintainAspectRatio:false,
         plugins: {
-          legend: {display:true, labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:8}},
-          tooltip: {callbacks: {
-            label: ctx => {
-              if(ctx.dataset.yAxisID==='yPace') {
-                const v=ctx.raw, m=Math.floor(v), s=Math.round((v-m)*60).toString().padStart(2,'0');
-                const note=tRunData[ctx.dataIndex]?.note||'';
-                return `Passo: ${m}:${s}/km  (${note})`;
-              }
-              return `FC: ${ctx.raw} bpm`;
+          legend:{display:true,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:8,
+            filter: item => !item.text.startsWith('Trend')}},
+          tooltip:{callbacks:{label: ctx => {
+            if(ctx.dataset.showLine) return null; // nascondi tooltip trend
+            if(ctx.dataset.yAxisID==='yPace') {
+              const v=ctx.raw, m=Math.floor(v), s=Math.round((v-m)*60).toString().padStart(2,'0');
+              return `Passo: ${m}:${s}/km  —  ${threshData[ctx.dataIndex]?.note||''}`;
             }
-          }}
+            return `FC: ${ctx.raw} bpm`;
+          }}}
         },
         scales: {
-          x: {ticks:{color:'#8892a4',font:{size:10}}, grid:{color:'#2a2d3a'}},
-          yPace: {
-            type:'linear', position:'left', reverse:true, min:4.0, max:5.8,
-            ticks:{color:'var(--blue)',font:{size:10},
-              callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}
-            },
+          x:{ticks:{color:'#8892a4',font:{size:10}},grid:{color:'#2a2d3a'}},
+          yPace:{type:'linear',position:'left',reverse:true,
+            ticks:{color:'#3b82f6',font:{size:10},
+              callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}},
             grid:{color:'#2a2d3a'},
-            title:{display:true, text:'min/km', color:'var(--blue)', font:{size:9}},
-          },
-          yHR: {
-            type:'linear', position:'right', min:160, max:192,
-            ticks:{color:'var(--red)',font:{size:10}},
+            title:{display:true,text:'min/km',color:'#3b82f6',font:{size:9}}},
+          yHR:{type:'linear',position:'right',
+            ticks:{color:'#ef4444',font:{size:10}},
             grid:{display:false},
-            title:{display:true, text:'bpm FC', color:'var(--red)', font:{size:9}},
-          },
+            title:{display:true,text:'FC bpm',color:'#ef4444',font:{size:9}}},
         },
       },
     });
@@ -590,11 +597,13 @@ function renderTRuns(acts, bio) {
   tbl.innerHTML=`<tr><th>Sessione</th><th>Data</th><th>Passo sforzo</th><th>FC</th><th>Dist</th></tr>`+
     truns.map(a=>{
       const b=bioById[a.id];
+      const nonSoglia = b?.exclude_threshold;
+      const rowStyle = nonSoglia ? 'opacity:0.5' : '';
       const paceCell = b
-        ? `<strong>${paceFromS(b.tempo_pace_s)}/km</strong><br><span style="font-size:9px;color:var(--muted)">${b.note}</span>`
+        ? `<strong>${paceFromS(b.tempo_pace_s)}/km</strong>${nonSoglia?` <span style="font-size:9px;color:var(--yellow)">[non soglia]</span>`:''}<br><span style="font-size:9px;color:var(--muted)">${b.note}</span>`
         : `${paceStr(a.avg_speed)}/km <span style="font-size:9px;color:var(--muted)">(media att.)</span>`;
       const fc = b ? b.tempo_hr+'♥' : (a.avg_hr?Math.round(a.avg_hr)+'♥':'—');
-      return `<tr>
+      return `<tr style="${rowStyle}">
         <td>${pillHtml('T')} ${a.name}</td>
         <td>${fmtDate(a.start_local)}</td>
         <td>${paceCell}</td>
@@ -716,13 +725,18 @@ function renderBiomechanics(bio) {
     }
   });
 
-  // Nota GCT
-  const best = entries.reduce((b,e) => e.avg.gct_ms < b.avg.gct_ms ? e : b);
+  // Nota GCT — avg best sessione + min lap istantaneo
+  const bestAvg = entries.reduce((b,e) => e.avg.gct_ms < b.avg.gct_ms ? e : b);
+  let minLap = {val:Infinity, label:'', date:''};
+  for (const e of entries)
+    for (const r of e.reps)
+      if (r.gct_ms && r.gct_ms < minLap.val) minLap = {val:r.gct_ms, label:e.label, date:e.date};
   const first = entries[0], last = entries[entries.length-1];
   const delta = Math.round(first.avg.gct_ms - last.avg.gct_ms);
   document.getElementById('gct-note').innerHTML =
     `<span style="color:var(--red)">■</span> R &nbsp;<span style="color:var(--blue)">■</span> T &nbsp;<span style="color:var(--green)">■</span> L &nbsp;·&nbsp;` +
-    `Best: <strong>${best.label} ${best.avg.gct_ms}ms</strong> (${fmtDate(best.date)}) &nbsp;·&nbsp;` +
+    `Best avg sessione: <strong>${bestAvg.label} ${bestAvg.avg.gct_ms}ms</strong> (${fmtDate(bestAvg.date)}) &nbsp;·&nbsp;` +
+    `Min lap: <strong>${minLap.label} ${Math.round(minLap.val)}ms</strong> (${fmtDate(minLap.date)}) &nbsp;·&nbsp;` +
     (delta>0 ? `<strong style="color:var(--green)">−${delta}ms</strong> dal ${fmtDate(first.date)}` : 'trend in corso');
 
   // Cadenza chart
@@ -840,13 +854,41 @@ async function main() {
 
   // Weekly by type
   const wk=weeklyByType(acts);
-  mkChart('typeChart', wk.labels, [
-    {label:'R',data:wk.R,borderColor:'#ef4444',backgroundColor:'#ef444466'},
-    {label:'T',data:wk.T,borderColor:'#3b82f6',backgroundColor:'#3b82f666'},
-    {label:'L',data:wk.L,borderColor:'#22c55e',backgroundColor:'#22c55e66'},
-    {label:'F',data:wk.F,borderColor:'#a855f7',backgroundColor:'#a855f766'},
-    {label:'Altro',data:wk.X,borderColor:'#8892a4',backgroundColor:'#8892a466'},
-  ], {stacked:true}, 'bar');
+  {
+    const canvas=document.getElementById('typeChart');
+    if(!canvas.parentElement.dataset.chartWrap){
+      const wrap=document.createElement('div');
+      wrap.dataset.chartWrap='1';
+      wrap.style.cssText='position:relative;height:260px;width:100%';
+      canvas.parentNode.insertBefore(wrap,canvas);
+      wrap.appendChild(canvas);
+    }
+    const sunOf=iso=>{const d=new Date(iso);d.setDate(d.getDate()+6);return fmtDate(d.toISOString().slice(0,10));};
+    new Chart(canvas.getContext('2d'),{
+      type:'bar',
+      data:{labels:wk.labels,datasets:[
+        {label:'R',data:wk.R,backgroundColor:'#ef444466',borderColor:'#ef4444',borderWidth:1},
+        {label:'T',data:wk.T,backgroundColor:'#3b82f666',borderColor:'#3b82f6',borderWidth:1},
+        {label:'L',data:wk.L,backgroundColor:'#22c55e66',borderColor:'#22c55e',borderWidth:1},
+        {label:'F',data:wk.F,backgroundColor:'#a855f766',borderColor:'#a855f7',borderWidth:1},
+        {label:'Altro',data:wk.X,backgroundColor:'#8892a466',borderColor:'#8892a4',borderWidth:1},
+      ]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{
+          legend:{display:true,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:6}},
+          tooltip:{callbacks:{
+            title:ctx=>`Sett. ${wk.labels[ctx[0].dataIndex]} – ${sunOf(wk.dates[ctx[0].dataIndex])}`,
+            label:ctx=>`${ctx.dataset.label}: ${ctx.raw} km`,
+          }},
+        },
+        scales:{
+          x:{stacked:true,ticks:{color:'#8892a4',font:{size:9},maxTicksLimit:12},grid:{color:'#2a2d3a'}},
+          y:{stacked:true,ticks:{color:'#8892a4',font:{size:10}},grid:{color:'#2a2d3a'}},
+        },
+      },
+    });
+  }
 
   // Pace trend (>5km) — scatter + trend line tratteggiata
   const runs5=acts.filter(a=>a.sport_type==='Run'&&a.distance>=5000);

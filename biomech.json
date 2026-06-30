@@ -45,7 +45,8 @@
         347,
         338
       ],
-      "note": "3×2km · rep: 5:40|5:47|5:38 · avg 5:42/km · FC169 · corsa con amica"
+      "exclude_threshold": true,
+      "note": "3x2km · rep: 5:40|5:47|5:38 · avg 5:42/km · FC169 · corsa con amica (non test soglia)"
     },
     {
       "id": "19119665382",
