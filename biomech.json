@@ -4,25 +4,36 @@
       "id": "18792790917",
       "date": "2026-06-05",
       "label": "T1",
-      "tempo_pace_s": 287,
+      "tempo_pace_s": 275,
       "tempo_hr": 180,
-      "note": "3×2km @4:47/km · FC180 · con recuperi"
+      "reps_pace_s": [269, 284, 271],
+      "note": "3×2km · rep: 4:29|4:44|4:31 · avg 4:35/km · FC180 effort"
     },
     {
       "id": "18886821325",
       "date": "2026-06-12",
       "label": "T2",
       "tempo_pace_s": 275,
-      "tempo_hr": 171,
-      "note": "4km continui @4:35/km · FC171 · soglia T2 reale"
+      "tempo_hr": 179,
+      "note": "3×2km @4:35/km · FC179 effort · soglia T2 reale"
     },
     {
       "id": "19018018651",
       "date": "2026-06-22",
       "label": "T3",
-      "tempo_pace_s": 310,
+      "tempo_pace_s": 308,
       "tempo_hr": 177,
-      "note": "10km progressivo · porzione sostenuta ~5:10/km"
+      "reps_pace_s": [307, 312, 304],
+      "note": "3×2km · rep: 5:07|5:12|5:04 · avg 5:08/km · FC177 · caldo+digiuno"
+    },
+    {
+      "id": "19093795994",
+      "date": "2026-06-28",
+      "label": "T4",
+      "tempo_pace_s": 342,
+      "tempo_hr": 169,
+      "reps_pace_s": [340, 347, 338],
+      "note": "3×2km · rep: 5:40|5:47|5:38 · avg 5:42/km · FC169 · corsa con amica"
     },
     {
       "id": "19119665382",
@@ -30,7 +41,7 @@
       "label": "T5",
       "tempo_pace_s": 282,
       "tempo_hr": 184,
-      "note": "4×2km @4:42/km · FC184 · target 4:35-4:45 ✓"
+      "note": "4×2km @4:42/km · FC184 effort · target 4:35-4:45 ✓"
     }
   ],
   "aerobic_efficiency": [

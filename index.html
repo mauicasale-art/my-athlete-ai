@@ -92,7 +92,8 @@ header .sub{font-size:11px;color:var(--muted);margin-top:2px}
 .act-name{flex:1;font-size:12px}
 .act-meta{font-size:10px;color:var(--muted);text-align:right;line-height:1.6}
 
-canvas{max-height:340px}
+canvas{height:380px}
+#typeChart,#hrChart,#bbChart,#slpChart,#strChart{height:220px}
 
 @media(max-width:480px){.g4{grid-template-columns:repeat(2,1fr)}.presess{grid-template-columns:1fr}}
 </style>
@@ -409,7 +410,7 @@ function mkChart(id, labels, datasets, yOpts={}, type='line') {
       backgroundColor: type==='line' && datasets.length===1 ? d.borderColor+'15' : d.backgroundColor||d.borderColor+'cc',
     }))},
     options:{
-      responsive:true, maintainAspectRatio:true,
+      responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:datasets.length>1,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:6}}},
       scales:{
         x:{ticks:{color:'#8892a4',font:{size:9},maxTicksLimit:10},grid:{color:'#2a2d3a'}},
@@ -772,18 +773,29 @@ async function main() {
       };
     });
   }
+  // t_runs = fonte authoritative per passo e FC delle T (dati reali per rep)
+  const tRunsByDate = {};
+  for (const t of bio?.t_runs || []) tRunsByDate[t.date] = t;
+
   // Lookup biomeccanica per passo/FC effort-only su T e R
   const bioByDate = {};
   for (const e of bio?.rep_biomechanics || []) {
-    if (e.reps?.length) {
-      const effortPaceS = e.reps.reduce((s,r)=>s+r.pace_s,0)/e.reps.length;
-      bioByDate[e.date] = {
-        effort_pace_min: Math.round(effortPaceS/60*100)/100,
-        effort_hr: e.avg.gct_ms ? e.reps.reduce((s,r)=>s+(r.hr||0),0)/e.reps.length : null,
-        effort_cad: e.avg.cadence_spm,
-        label: e.label,
-      };
-    }
+    if (!e.reps?.length) continue;
+    const tRun = tRunsByDate[e.date];
+    // Filtra i lap di riscaldamento/cooldown tenendo solo quelli a ritmo sostenuto
+    // Per R: < 4:10/km (250s); per T: < 6:30/km (390s) ma sempre filtra lenti > t.tempo_pace_s+60s
+    const paceThresh = tRun ? tRun.tempo_pace_s + 60 : 350;
+    const effortReps = e.reps.filter(r => r.pace_s < paceThresh && (r.hr||0) >= 150);
+    const effortPaceS = tRun?.tempo_pace_s
+      || (effortReps.length ? effortReps.reduce((s,r)=>s+r.pace_s,0)/effortReps.length : null);
+    const hrReps = effortReps.filter(r=>r.hr);
+    const effortHR = hrReps.length ? Math.round(hrReps.reduce((s,r)=>s+r.hr,0)/hrReps.length) : null;
+    bioByDate[e.date] = {
+      effort_pace_min: effortPaceS ? Math.round(effortPaceS/60*100)/100 : null,
+      effort_hr: effortHR,
+      effort_cad: e.avg.cadence_spm,
+      label: e.label,
+    };
   }
 
   // ── Strava charts ───────────────────────────────────────────────────────────
