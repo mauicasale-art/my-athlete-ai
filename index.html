@@ -92,8 +92,6 @@ header .sub{font-size:11px;color:var(--muted);margin-top:2px}
 .act-name{flex:1;font-size:12px}
 .act-meta{font-size:10px;color:var(--muted);text-align:right;line-height:1.6}
 
-canvas{height:380px}
-#typeChart,#hrChart,#bbChart,#slpChart,#strChart{height:220px}
 
 @media(max-width:480px){.g4{grid-template-columns:repeat(2,1fr)}.presess{grid-template-columns:1fr}}
 </style>
@@ -410,7 +408,7 @@ function mkChart(id, labels, datasets, yOpts={}, type='line') {
       backgroundColor: type==='line' && datasets.length===1 ? d.borderColor+'15' : d.backgroundColor||d.borderColor+'cc',
     }))},
     options:{
-      responsive:true, maintainAspectRatio:false,
+      responsive:true, maintainAspectRatio:true, aspectRatio:1.2,
       plugins:{legend:{display:datasets.length>1,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:6}}},
       scales:{
         x:{ticks:{color:'#8892a4',font:{size:9},maxTicksLimit:10},grid:{color:'#2a2d3a'}},
