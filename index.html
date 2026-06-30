@@ -764,10 +764,13 @@ async function main() {
     fetch(BIOMECH_URL+'?t='+t).then(r=>r.json()).catch(()=>null),
   ]);
 
-  // Strava cadenza = half-cadence (72-73 spm/leg) → normalizza × 2
+  // Strava a volte invia half-cadence (~72-80), a volte già full spm (~145-160)
+  // Se < 100 → half-cadence → × 2; altrimenti già full spm
   let acts = (strava || []).map(a => ({
     ...a,
-    avg_cadence: a.avg_cadence ? Math.round(a.avg_cadence * 2) : null,
+    avg_cadence: a.avg_cadence
+      ? (a.avg_cadence < 100 ? Math.round(a.avg_cadence * 2) : Math.round(a.avg_cadence))
+      : null,
   }));
   // Merge: Garmin sovrascrive nome (workout originale T5, R4...) e cadenza (già full)
   if (garminActs && garminActs.length) {
