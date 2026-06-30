@@ -400,7 +400,8 @@ function renderGoals(){
 // ── Chart factory ──────────────────────────────────────────────────────────────
 // Altezze fisse per tipo di grafico — i piccoli (wellness, donut) restano compatti
 const CHART_H = {typeChart:260, hrChart:240, bbChart:240, slpChart:240, strChart:240};
-function mkChart(id, labels, datasets, yOpts={}, type='line') {
+function fmtPaceTooltip(v){const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}/km`;}
+function mkChart(id, labels, datasets, yOpts={}, type='line', fmtTooltip=null) {
   const canvas = document.getElementById(id);
   // Wrappa in un div position:relative con altezza fissa — evita il resize loop infinito
   if (!canvas.parentElement.dataset.chartWrap) {
@@ -421,7 +422,10 @@ function mkChart(id, labels, datasets, yOpts={}, type='line') {
     }))},
     options:{
       responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:datasets.length>1,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:6}}},
+      plugins:{
+        legend:{display:datasets.length>1,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:6}},
+        tooltip:{callbacks:{label: fmtTooltip ? ctx=>fmtTooltip(ctx.raw) : ctx=>`${ctx.raw}`}},
+      },
       scales:{
         x:{ticks:{color:'#8892a4',font:{size:9},maxTicksLimit:10},grid:{color:'#2a2d3a'}},
         y:{ticks:{color:'#8892a4',font:{size:10},...yTicksExtra},grid:{color:'#2a2d3a'},...yRest},
@@ -790,23 +794,28 @@ async function main() {
   const tRunsByDate = {};
   for (const t of bio?.t_runs || []) tRunsByDate[t.date] = t;
 
-  // Lookup biomeccanica per passo/FC effort-only su T e R
+  // Lookup biomeccanica per passo/FC/cadenza effort-only su T e R
   const bioByDate = {};
   for (const e of bio?.rep_biomechanics || []) {
     if (!e.reps?.length) continue;
     const tRun = tRunsByDate[e.date];
-    // Filtra i lap di riscaldamento/cooldown tenendo solo quelli a ritmo sostenuto
-    // Per R: < 4:10/km (250s); per T: < 6:30/km (390s) ma sempre filtra lenti > t.tempo_pace_s+60s
-    const paceThresh = tRun ? tRun.tempo_pace_s + 60 : 350;
+    const sessType = classify(e.label || '');
+    // Soglia ritmo per escludere riscaldamento:
+    // T: tempo_pace_s + 60s  |  R: 240s (4:00/km, solo interval veloci)  |  altri: 330s
+    const paceThresh = tRun ? tRun.tempo_pace_s + 60
+      : sessType === 'R' ? 240
+      : 330;
     const effortReps = e.reps.filter(r => r.pace_s < paceThresh && (r.hr||0) >= 150);
     const effortPaceS = tRun?.tempo_pace_s
       || (effortReps.length ? effortReps.reduce((s,r)=>s+r.pace_s,0)/effortReps.length : null);
     const hrReps = effortReps.filter(r=>r.hr);
     const effortHR = hrReps.length ? Math.round(hrReps.reduce((s,r)=>s+r.hr,0)/hrReps.length) : null;
+    const cadReps = effortReps.filter(r=>r.cadence_spm > 0);
+    const effortCad = cadReps.length ? Math.round(cadReps.reduce((s,r)=>s+r.cadence_spm,0)/cadReps.length) : null;
     bioByDate[e.date] = {
       effort_pace_min: effortPaceS ? Math.round(effortPaceS/60*100)/100 : null,
       effort_hr: effortHR,
-      effort_cad: e.avg.cadence_spm,
+      effort_cad: effortCad,
       label: e.label,
     };
   }
@@ -852,17 +861,23 @@ async function main() {
     }],
     {reverse:true,
       ticks:{callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}}
-    }
+    }, 'line', fmtPaceTooltip
   );
 
-  // Cadenza — tutte le corse con cadenza (normalizzata × 2 nel merge)
-  const cads=acts.filter(a=>a.sport_type==='Run'&&a.avg_cadence&&a.avg_cadence>100);
+  // Cadenza — solo corse >= 5km; per T/R usa cadenza effort-only da biomech
+  const cads=acts.filter(a=>a.sport_type==='Run'&&a.avg_cadence&&a.avg_cadence>100&&a.distance>=5000);
   const cadColors=cads.map(a=>{const t=classify(a.name);return t==='R'?'#ef4444':t==='T'?'#3b82f6':t==='L'?'#22c55e':'#f97316';});
   mkChart('cadChart',
     cads.map(a=>fmtDate(a.start_local)),
     [{
       label:'spm',
-      data:cads.map(a=>Math.round(a.avg_cadence)),
+      data:cads.map(a=>{
+        const d=a.start_local.slice(0,10);
+        const t=classify(a.name);
+        const bio=bioByDate[d];
+        if(bio?.effort_cad&&(t==='T'||t==='R')) return bio.effort_cad;
+        return Math.round(a.avg_cadence);
+      }),
       borderColor:cadColors,
       pointBackgroundColor:cadColors,
       segment:{borderColor:ctx=>cadColors[ctx.p1DataIndex]||'#f97316'},
