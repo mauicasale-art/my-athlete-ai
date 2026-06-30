@@ -92,7 +92,7 @@ header .sub{font-size:11px;color:var(--muted);margin-top:2px}
 .act-name{flex:1;font-size:12px}
 .act-meta{font-size:10px;color:var(--muted);text-align:right;line-height:1.6}
 
-canvas{max-height:240px}
+canvas{max-height:340px}
 
 @media(max-width:480px){.g4{grid-template-columns:repeat(2,1fr)}.presess{grid-template-columns:1fr}}
 </style>
@@ -344,32 +344,34 @@ function readiness(w) {
   return{level:'ROSSO',emoji:'🔴',color:'var(--red)',reasons};
 }
 
-// ── Sessione pianificata ──────────────────────────────────────────────────────
-function nextSession(acts) {
-  const runs = acts.filter(a=>a.sport_type==='Run');
-  const last = runs[runs.length-1];
-  if (!last) return null;
-  const lastType = classify(last.name);
-  const day = new Date().getDay(); // 0=dom
-
-  // logica semplice: alterno R→T→F/L secondo il giorno
+// ── Sessione pianificata — da piano, non da Garmin ────────────────────────────
+function nextSession() {
+  const day = new Date().getDay(); // 0=dom, 1=lun, 2=mar, 3=mer, 4=gio, 5=ven, 6=sab
+  // Piano F2 (sett 5-8, lug): R martedì · T giovedì · L sabato/domenica
   const map = {
-    1:{type:'T',label:'Tempo Run',desc:'Risc 15\' + 3×2km a 4:35-4:45/km + defa 10\'',
-       targets:['4:35-4:45/km','FC 163-172','3×2km']},
-    2:{type:'F',label:'Corsa Facile',desc:'Recovery run Z2, passo conversazionale',
-       targets:['<6:00/km','FC <162']},
-    3:{type:'R',label:'Ripetute',desc:'Risc 20\' + 6×1\'30\" a 3:20-3:40/km + defa',
-       targets:['3:20-3:40/km','FC 183-197','6 rep']},
-    4:{type:'F',label:'Riposo / Core',desc:'Core quotidiano L3-L4 + stretching',
-       targets:['core 20\'']},
-    5:{type:'L',label:'Lungo',desc:'Lungo con ultimi 3-5km a 4:51/km (ritmo Venaria)',
-       targets:['4:51/km finale','FC Z2-Z3','16-18km']},
-    6:{type:'F',label:'Corsa Facile',desc:'Corsa facile o riposo attivo',
-       targets:['<6:00/km','60-70 min']},
-    0:{type:'X',label:'Riposo',desc:'Riposo completo — recovery attiva opzionale',
-       targets:[]},
+    0:{type:'L',label:'Lungo F2',
+       desc:'Lungo 12-14km · ultimi 3-5km a 4:51/km (ritmo Venaria) · gel Maurten a km 7',
+       targets:['4:51/km finale','FC Z2-Z3','12-14km','gel km 7']},
+    1:{type:'F',label:'Recupero / Core',
+       desc:'Corsa facile Z1-Z2 opzionale + core quotidiano + sessione forza A o B',
+       targets:['<6:30/km','FC <155','core 12\'']},
+    2:{type:'R',label:'Ripetute F2',
+       desc:'Risc 20\' + 6×1\'30\" a 3:20-3:40/km · rec 90\" camminato + defa 10\'',
+       targets:['3:20-3:40/km','FC 183-197','6×1\'30\"','negative split']},
+    3:{type:'F',label:'Corsa Facile',
+       desc:'Recovery run Z2 conversazionale · niente qualità',
+       targets:['<6:30/km','FC <162','45-60 min']},
+    4:{type:'T',label:'Tempo Run F2',
+       desc:'Risc 15\' + 4×2km a 4:35-4:45/km · rec 90\" + defa 10\'',
+       targets:['4:35-4:45/km','FC 175-182','4×2km','rec 90\"']},
+    5:{type:'F',label:'Riposo / Facile',
+       desc:'Riposo completo o corsa molto facile 30-40\' · prepara il lungo di domani',
+       targets:['riposo','oppure <6:30/km 30\'']},
+    6:{type:'L',label:'Lungo F2',
+       desc:'Lungo 12-14km · ultimi 3-5km a 4:51/km (ritmo Venaria) · gel Maurten a km 7',
+       targets:['4:51/km finale','FC Z2-Z3','12-14km','gel km 7']},
   };
-  return map[day] || map[1];
+  return map[day];
 }
 
 // ── Goals ─────────────────────────────────────────────────────────────────────
@@ -398,6 +400,7 @@ function renderGoals(){
 
 // ── Chart factory ──────────────────────────────────────────────────────────────
 function mkChart(id, labels, datasets, yOpts={}, type='line') {
+  const {ticks: yTicksExtra={}, ...yRest} = yOpts;
   new Chart(document.getElementById(id).getContext('2d'), {
     type,
     data:{labels, datasets: datasets.map(d=>({
@@ -409,8 +412,8 @@ function mkChart(id, labels, datasets, yOpts={}, type='line') {
       responsive:true, maintainAspectRatio:true,
       plugins:{legend:{display:datasets.length>1,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:6}}},
       scales:{
-        x:{ticks:{color:'#8892a4',font:{size:9},maxTicksLimit:8},grid:{color:'#2a2d3a'}},
-        y:{ticks:{color:'#8892a4',font:{size:9}},grid:{color:'#2a2d3a'},...yOpts},
+        x:{ticks:{color:'#8892a4',font:{size:9},maxTicksLimit:10},grid:{color:'#2a2d3a'}},
+        y:{ticks:{color:'#8892a4',font:{size:10},...yTicksExtra},grid:{color:'#2a2d3a'},...yRest},
       },
     }
   });
@@ -750,16 +753,37 @@ async function main() {
     fetch(BIOMECH_URL+'?t='+t).then(r=>r.json()).catch(()=>null),
   ]);
 
-  // Merge: Strava base (54 attività storiche), Garmin sovrascrive il nome dove disponibile
-  // Garmin ha i nomi workout originali (T5, R4, L1...) che Strava perde
-  let acts = strava || [];
+  // Strava cadenza = half-cadence (72-73 spm/leg) → normalizza × 2
+  let acts = (strava || []).map(a => ({
+    ...a,
+    avg_cadence: a.avg_cadence ? Math.round(a.avg_cadence * 2) : null,
+  }));
+  // Merge: Garmin sovrascrive nome (workout originale T5, R4...) e cadenza (già full)
   if (garminActs && garminActs.length) {
     const gByDate = {};
     for (const a of garminActs) gByDate[a.start_local.slice(0,10)] = a;
     acts = acts.map(a => {
       const g = gByDate[a.start_local.slice(0,10)];
-      return g ? {...a, name: g.name} : a;
+      if (!g) return a;
+      return {...a, name: g.name,
+        avg_cadence: g.avg_cadence ?? a.avg_cadence,
+        avg_hr:  g.avg_hr  ?? a.avg_hr,
+        max_hr:  g.max_hr  ?? a.max_hr,
+      };
     });
+  }
+  // Lookup biomeccanica per passo/FC effort-only su T e R
+  const bioByDate = {};
+  for (const e of bio?.rep_biomechanics || []) {
+    if (e.reps?.length) {
+      const effortPaceS = e.reps.reduce((s,r)=>s+r.pace_s,0)/e.reps.length;
+      bioByDate[e.date] = {
+        effort_pace_min: Math.round(effortPaceS/60*100)/100,
+        effort_hr: e.avg.gct_ms ? e.reps.reduce((s,r)=>s+(r.hr||0),0)/e.reps.length : null,
+        effort_cad: e.avg.cadence_spm,
+        label: e.label,
+      };
+    }
   }
 
   // ── Strava charts ───────────────────────────────────────────────────────────
@@ -779,33 +803,64 @@ async function main() {
     {label:'Altro',data:wk.X,borderColor:'#8892a4',backgroundColor:'#8892a466'},
   ], {stacked:true}, 'bar');
 
-  // Pace trend (>5km, last 30)
-  const runs5=acts.filter(a=>a.sport_type==='Run'&&a.distance>=5000).slice(-30);
+  // Pace trend (>5km) — usa passo effort-only per T e R da biomech
+  const runs5=acts.filter(a=>a.sport_type==='Run'&&a.distance>=5000);
+  const paceColors = runs5.map(a=>{
+    const t=classify(a.name);
+    return t==='R'?'#ef4444':t==='T'?'#3b82f6':t==='L'?'#22c55e':'#f97316';
+  });
   mkChart('paceChart',
     runs5.map(a=>fmtDate(a.start_local)),
-    [{label:'min/km',data:runs5.map(a=>paceMin(a.avg_speed)),borderColor:'var(--orange)'}],
-    {reverse:true,min:4.5,max:8,
+    [{
+      label:'min/km',
+      data:runs5.map(a=>{
+        const d=a.start_local.slice(0,10);
+        const t=classify(a.name);
+        const bio=bioByDate[d];
+        // Per T e R usa passo effort-only da biomech se disponibile
+        if(bio && (t==='T'||t==='R')) return bio.effort_pace_min;
+        return paceMin(a.avg_speed);
+      }),
+      borderColor: paceColors,
+      pointBackgroundColor: paceColors,
+      segment:{borderColor: ctx=>paceColors[ctx.p1DataIndex]||'#f97316'},
+    }],
+    {reverse:true, min:4.0, max:8.0,
       ticks:{callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}}
     }
   );
 
-  // Cadence
-  const cads=acts.filter(a=>a.sport_type==='Run'&&a.avg_cadence).slice(-25);
+  // Cadenza — tutte le corse con cadenza (normalizzata × 2 nel merge)
+  const cads=acts.filter(a=>a.sport_type==='Run'&&a.avg_cadence&&a.avg_cadence>100);
+  const cadColors=cads.map(a=>{const t=classify(a.name);return t==='R'?'#ef4444':t==='T'?'#3b82f6':t==='L'?'#22c55e':'#f97316';});
   mkChart('cadChart',
     cads.map(a=>fmtDate(a.start_local)),
-    [{label:'spm',data:cads.map(a=>Math.round(a.avg_cadence)),borderColor:'var(--teal)'}],
-    {min:130,max:175}
+    [{
+      label:'spm',
+      data:cads.map(a=>Math.round(a.avg_cadence)),
+      borderColor:cadColors,
+      pointBackgroundColor:cadColors,
+      segment:{borderColor:ctx=>cadColors[ctx.p1DataIndex]||'#f97316'},
+    }],
+    {min:130, max:185, ticks:{callback:v=>v+' spm'}}
   );
 
   // Activities list
   const ul=document.getElementById('acts');
-  [...acts].filter(a=>a.sport_type==='Run').reverse().slice(0,12).forEach(a=>{
+  [...acts].filter(a=>a.sport_type==='Run').reverse().slice(0,15).forEach(a=>{
     const t=classify(a.name);
     const li=document.createElement('li'); li.className='act-item';
-    const hrStr=a.avg_hr?` · ${Math.round(a.avg_hr)}♥`:'';
+    const d=a.start_local.slice(0,10);
+    const bio=bioByDate[d];
+    const isQuality=t==='T'||t==='R';
+    // Per T e R: usa dati effort-only da biomech se disponibili
+    const paceDisp = (isQuality&&bio) ? paceFromS(Math.round(bio.effort_pace_min*60))+'/km ⚡' : paceStr(a.avg_speed)+'/km';
+    const hrVal = (isQuality&&bio?.effort_hr) ? Math.round(bio.effort_hr) : (a.avg_hr?Math.round(a.avg_hr):null);
+    const hrStr = hrVal ? ` · ${hrVal}♥` : '';
+    const cadStr = (isQuality&&bio?.effort_cad) ? ` · ${bio.effort_cad}spm` : (a.avg_cadence?` · ${Math.round(a.avg_cadence)}spm`:'');
     li.innerHTML=`${pillHtml(t)}
       <div class="act-name">${a.name}</div>
-      <div class="act-meta">${(a.distance/1000).toFixed(1)}km · ${paceStr(a.avg_speed)}/km${hrStr}<br>${a.start_local.slice(0,10)}</div>`;
+      <div class="act-meta">${(a.distance/1000).toFixed(1)}km · ${paceDisp}${hrStr}${cadStr}<br>${fmtDate(a.start_local)}</div>`;
     ul.appendChild(li);
   });
 
@@ -824,7 +879,7 @@ async function main() {
   document.getElementById('r-detail').textContent=rv.reasons.length?rv.reasons.join(' · '):'Tutti i parametri ok';
 
   // Sessione pianificata
-  const sess=nextSession(acts);
+  const sess=nextSession();
   if(sess){
     document.getElementById('sess-type').textContent=sess.label;
     document.getElementById('sess-desc').textContent=sess.desc;

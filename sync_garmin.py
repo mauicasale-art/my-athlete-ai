@@ -359,14 +359,24 @@ def sink_files(all_wellness, all_activities, out_dir: Path, dry_run: bool):
                 path.write_text(md, encoding="utf-8")
 
     if not dry_run:
+        # Accumula: legge lo storico esistente e unisce — non sovrascrive
+        data_path = out_dir / "data.json"
+        existing_well = {}
+        if data_path.exists():
+            try:
+                old = json.loads(data_path.read_text(encoding="utf-8"))
+                existing_well = {w["date"]: w for w in old.get("wellness", [])}
+            except Exception:
+                pass
+        for w in all_wellness:
+            existing_well[w["date"]] = w
+        merged_well = sorted(existing_well.values(), key=lambda x: x["date"], reverse=True)
         data = {
-            "wellness": all_wellness,
+            "wellness": merged_well,
             "activities": [{"date": str(d), "list": acts} for d, acts in all_activities],
         }
-        (out_dir / "data.json").write_text(
-            json.dumps(data, indent=2, default=str), encoding="utf-8"
-        )
-        print(f"  [json] {out_dir / 'data.json'}")
+        data_path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
+        print(f"  [json] {data_path} ({len(merged_well)} giorni wellness)")
         write_latest(all_wellness, all_activities, out_dir)
 
 
