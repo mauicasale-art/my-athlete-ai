@@ -214,16 +214,20 @@ canvas{max-height:240px}
 <script>
 const RAW = 'https://raw.githubusercontent.com/mauicasale-art/my-athlete-ai/main/';
 const GARMIN_URL = RAW + 'garmin/data.json';
+const GARMIN_ACTS_URL = RAW + 'garmin_activities.json';
 const STRAVA_URL = RAW + 'strava_activities.json';
 const BIOMECH_URL = RAW + 'biomech.json';
 
 // ── Classificatore sessioni ────────────────────────────────────────────────────
 function classify(name) {
   const n = name.toUpperCase();
-  if (/[—\-]\s*R\d|^R\d|\bRIPETUT/.test(n)) return 'R';
-  if (/[—\-]\s*T\d|^T\d|\bTEMPO/.test(n)) return 'T';
-  if (/[—\-]\s*L\d|^L\d|\bLUNGO/.test(n)) return 'L';
-  if (/[—\-]\s*F\d|^F\d|\bRECUPERO|\bFACILE/.test(n)) return 'F';
+  // Formato Garmin: "Torino - T5", "Torino - R4", "Torino - L1", ecc.
+  // Formato manuale: "T5 — ...", "R4 — ...", "T5", ecc.
+  if (/[\s\-—]\s*R\d|^R\d|\bRIPETUT/.test(n)) return 'R';
+  if (/[\s\-—]\s*T\d|^T\d|\bTEMPO/.test(n)) return 'T';
+  if (/[\s\-—]\s*L\d|^L\d|\bLUNGO/.test(n)) return 'L';
+  if (/[\s\-—]\s*F[\dW]?$|[\s\-—]\s*F\d|^F\d|\bRECUPERO|\bFACILE/.test(n)) return 'F';
+  if (/[\s\-—]\s*[AB]\d|FORZA/.test(n)) return 'X'; // sessioni forza
   if (/MEZZA|21K/.test(n)) return 'L';
   if (/WALK|CAMMINAT/.test(n)) return 'W';
   return 'X';
@@ -612,13 +616,25 @@ function renderAerobicEfficiency(bio) {
 async function main() {
   renderGoals();
 
-  const [garmin, strava, bio] = await Promise.all([
-    fetch(GARMIN_URL+'?t='+Date.now()).then(r=>r.json()).catch(()=>null),
-    fetch(STRAVA_URL+'?t='+Date.now()).then(r=>r.json()).catch(()=>[]),
-    fetch(BIOMECH_URL+'?t='+Date.now()).then(r=>r.json()).catch(()=>null),
+  const t = Date.now();
+  const [garmin, garminActs, strava, bio] = await Promise.all([
+    fetch(GARMIN_URL+'?t='+t).then(r=>r.json()).catch(()=>null),
+    fetch(GARMIN_ACTS_URL+'?t='+t).then(r=>r.json()).catch(()=>null),
+    fetch(STRAVA_URL+'?t='+t).then(r=>r.json()).catch(()=>null),
+    fetch(BIOMECH_URL+'?t='+t).then(r=>r.json()).catch(()=>null),
   ]);
 
-  const acts = strava||[];
+  // Merge: Strava base (54 attività storiche), Garmin sovrascrive il nome dove disponibile
+  // Garmin ha i nomi workout originali (T5, R4, L1...) che Strava perde
+  let acts = strava || [];
+  if (garminActs && garminActs.length) {
+    const gByDate = {};
+    for (const a of garminActs) gByDate[a.start_local.slice(0,10)] = a;
+    acts = acts.map(a => {
+      const g = gByDate[a.start_local.slice(0,10)];
+      return g ? {...a, name: g.name} : a;
+    });
+  }
 
   // ── Strava charts ───────────────────────────────────────────────────────────
   renderProiezione(bio);

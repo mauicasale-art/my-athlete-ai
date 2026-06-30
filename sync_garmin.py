@@ -121,6 +121,69 @@ def fetch_activities(client, day: date) -> list:
     return result or []
 
 
+def normalize_activity(a: dict) -> dict | None:
+    """Converte un'attività Garmin nel formato usato dalla dashboard."""
+    type_key = (a.get("activityType") or {}).get("typeKey", "")
+    sport_key = (a.get("sportType") or {}).get("sportTypeKey", "")
+    if "running" not in type_key.lower() and "running" not in sport_key.lower():
+        return None
+    half_cad = a.get("averageCadence") or 0
+    return {
+        "id": str(a.get("activityId", "")),
+        "name": a.get("activityName") or "Corsa",
+        "sport_type": "Run",
+        "start_local": (a.get("startTimeLocal") or "").replace(" ", "T"),
+        "distance": round(float(a.get("distance") or 0), 1),
+        "moving_time": int(a.get("movingDuration") or a.get("duration") or 0),
+        "avg_speed": round(float(a.get("averageSpeed") or 0), 4),
+        "avg_hr": round(float(a.get("averageHR") or 0), 1) or None,
+        "max_hr": int(a.get("maxHR") or 0) or None,
+        "avg_cadence": round(half_cad * 2, 1) if half_cad else None,
+        "total_elevation_gain": round(float(a.get("elevationGain") or 0), 1),
+        "calories": int(a.get("calories") or 0) or None,
+    }
+
+
+def sync_garmin_activities(client, out_path: Path, start_date: date, dry_run: bool):
+    """Backfill e aggiornamento continuo di garmin_activities.json.
+    Usa paginazione offset-based per recuperare tutte le attività senza limiti di finestra."""
+    existing = {}
+    if out_path.exists():
+        for act in json.loads(out_path.read_text(encoding="utf-8")):
+            existing[act["id"]] = act
+
+    start_iso = start_date.isoformat()
+    new_count = 0
+    offset = 0
+    page_size = 100
+
+    while True:
+        print(f"  Garmin activities offset={offset} limit={page_size} ...")
+        raw = safe(client.get_activities, offset, page_size)
+        if not raw:
+            break
+        added_this_page = 0
+        for a in raw:
+            # Salta attività antecedenti alla data di inizio
+            start_local = (a.get("startTimeLocal") or "").replace(" ", "T")
+            if start_local and start_local[:10] < start_iso:
+                continue
+            norm = normalize_activity(a)
+            if norm and norm["id"] and norm["id"] not in existing:
+                existing[norm["id"]] = norm
+                new_count += 1
+                added_this_page += 1
+        if len(raw) < page_size:
+            break  # ultima pagina
+        offset += page_size
+
+    acts = sorted(existing.values(), key=lambda x: x["start_local"])
+    print(f"  Totale: {len(acts)} attivita ({new_count} nuove)")
+    if not dry_run:
+        out_path.write_text(json.dumps(acts, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(f"  [json] {out_path}")
+
+
 # ── formattazione ──────────────────────────────────────────────────────────────
 
 def wellness_to_md(w: dict) -> str:
@@ -272,6 +335,10 @@ def main():
     parser.add_argument("--sink", choices=["files", "supabase"], default="files")
     parser.add_argument("--out", default="./garmin")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--activities", action="store_true",
+                        help="Sincronizza anche garmin_activities.json")
+    parser.add_argument("--backfill", default="2026-02-01",
+                        help="Data inizio backfill attività (default 2026-02-01)")
     args = parser.parse_args()
 
     if args.login:
@@ -298,6 +365,11 @@ def main():
         sink_files(all_wellness, all_activities, Path(args.out), args.dry_run)
     else:
         sink_supabase(all_wellness, all_activities, args.dry_run)
+
+    if args.activities:
+        print("\nSync attività Garmin ...")
+        start = date.fromisoformat(args.backfill)
+        sync_garmin_activities(client, Path("garmin_activities.json"), start, args.dry_run)
 
     print("Fatto.")
 
