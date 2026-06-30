@@ -813,7 +813,7 @@
   },
   {
     "id": "19119665382",
-    "name": "T5 — 4x2km",
+    "name": "Corsa mattutina",
     "sport_type": "Run",
     "start_local": "2026-06-30T07:42:54",
     "distance": 11319.3,
@@ -825,6 +825,6 @@
     "max_hr": 195.0,
     "relative_effort": 186.0,
     "calories": null,
-    "kudos_count": 2
+    "kudos_count": 3
   }
 ]
