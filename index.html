@@ -190,6 +190,21 @@ canvas{max-height:240px}
   </div>
 </div>
 
+<!-- BIOMECCANICA -->
+<div class="sec">Progressione biomeccanica</div>
+<div class="grid g2">
+  <div class="card">
+    <h2>GCT — Ground Contact Time (ms)</h2>
+    <canvas id="gctChart"></canvas>
+    <div id="gct-note" style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.6"></div>
+  </div>
+  <div class="card">
+    <h2>Cadenza (passi/min)</h2>
+    <canvas id="cadBioChart"></canvas>
+    <div id="cad-note" style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.6"></div>
+  </div>
+</div>
+
 <!-- MILESTONE -->
 <div class="sec">Milestone</div>
 <div class="grid" style="grid-template-columns:1fr">
@@ -612,6 +627,117 @@ function renderAerobicEfficiency(bio) {
     `Dati da analisi lap (non media attività) · <strong style="color:var(--green)">−${deltaSec}s/km</strong> a parità FC in ${pts.length-1} mesi · ${first.pace_note} → ${last.pace_note}`;
 }
 
+// ── Biomeccanica (GCT, cadenza, oscillazione da FIT) ─────────────────────────
+function renderBiomechanics(bio) {
+  const entries = (bio?.rep_biomechanics || []).filter(e => e.avg?.gct_ms);
+  if (!entries.length) return;
+
+  function typeColor(label) {
+    const l = label.toUpperCase();
+    if (/^R\d/.test(l)) return {border:'var(--red)', bg:'#ef444430'};
+    if (/^T\d/.test(l)) return {border:'var(--blue)', bg:'#3b82f630'};
+    if (/^L\d/.test(l)) return {border:'var(--green)', bg:'#22c55e30'};
+    return {border:'var(--muted)', bg:'#8892a430'};
+  }
+
+  const labels = entries.map(e => fmtDate(e.date));
+  const gctData = entries.map(e => e.avg.gct_ms);
+  const cadData = entries.map(e => e.avg.cadence_spm);
+  const colors = entries.map(e => typeColor(e.label));
+
+  // GCT chart
+  new Chart(document.getElementById('gctChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'GCT medio lap sforzo (ms)',
+        data: gctData,
+        borderColor: entries.map(e => typeColor(e.label).border),
+        backgroundColor: entries.map(e => typeColor(e.label).bg),
+        borderWidth: 2,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        pointBackgroundColor: entries.map(e => typeColor(e.label).border),
+        tension: 0.2,
+        segment: {borderColor: ctx => typeColor(entries[ctx.p1DataIndex]?.label||'').border},
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: {
+        legend: {display: false},
+        tooltip: {callbacks: {
+          label: ctx => {
+            const e = entries[ctx.dataIndex];
+            return [`${e.label}: ${ctx.raw}ms GCT`, `${e.reps.length} lap · cad ${e.avg.cadence_spm}spm`];
+          }
+        }}
+      },
+      scales: {
+        x: {ticks:{color:'#8892a4',font:{size:9}}, grid:{color:'#2a2d3a'}},
+        y: {
+          reverse: true,
+          ticks:{color:'#8892a4', font:{size:9},
+            callback: v => v+'ms'
+          },
+          grid:{color:'#2a2d3a'},
+        }
+      }
+    }
+  });
+
+  // Nota GCT
+  const best = entries.reduce((b,e) => e.avg.gct_ms < b.avg.gct_ms ? e : b);
+  const first = entries[0], last = entries[entries.length-1];
+  const delta = Math.round(first.avg.gct_ms - last.avg.gct_ms);
+  document.getElementById('gct-note').innerHTML =
+    `<span style="color:var(--red)">■</span> R &nbsp;<span style="color:var(--blue)">■</span> T &nbsp;<span style="color:var(--green)">■</span> L &nbsp;·&nbsp;` +
+    `Best: <strong>${best.label} ${best.avg.gct_ms}ms</strong> (${fmtDate(best.date)}) &nbsp;·&nbsp;` +
+    (delta>0 ? `<strong style="color:var(--green)">−${delta}ms</strong> dal ${fmtDate(first.date)}` : 'trend in corso');
+
+  // Cadenza chart
+  new Chart(document.getElementById('cadBioChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Cadenza media lap sforzo (spm)',
+        data: cadData,
+        borderColor: entries.map(e => typeColor(e.label).border),
+        backgroundColor: entries.map(e => typeColor(e.label).bg),
+        borderWidth: 2,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        pointBackgroundColor: entries.map(e => typeColor(e.label).border),
+        tension: 0.2,
+        segment: {borderColor: ctx => typeColor(entries[ctx.p1DataIndex]?.label||'').border},
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: {
+        legend: {display: false},
+        tooltip: {callbacks: {
+          label: ctx => {
+            const e = entries[ctx.dataIndex];
+            return [`${e.label}: ${ctx.raw} spm`, `GCT ${e.avg.gct_ms}ms · osc ${e.avg.osc_mm}mm`];
+          }
+        }}
+      },
+      scales: {
+        x: {ticks:{color:'#8892a4',font:{size:9}}, grid:{color:'#2a2d3a'}},
+        y: {min:140, max:175, ticks:{color:'#8892a4',font:{size:9}, callback:v=>v+' spm'}, grid:{color:'#2a2d3a'}}
+      }
+    }
+  });
+
+  const bestCad = entries.reduce((b,e) => e.avg.cadence_spm > b.avg.cadence_spm ? e : b);
+  document.getElementById('cad-note').innerHTML =
+    `Best: <strong>${bestCad.label} ${bestCad.avg.cadence_spm}spm</strong> (${fmtDate(bestCad.date)}) &nbsp;·&nbsp;` +
+    `Oscillazione media: <strong>${Math.round(entries.slice(-3).reduce((s,e)=>s+(e.avg.osc_mm||0),0)/3)}mm</strong> (ultime 3 sess.)`;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
   renderGoals();
@@ -638,6 +764,7 @@ async function main() {
 
   // ── Strava charts ───────────────────────────────────────────────────────────
   renderProiezione(bio);
+  renderBiomechanics(bio);
   renderMilestones(acts);
   renderTRuns(acts, bio);
   renderAerobicEfficiency(bio);

@@ -144,6 +144,96 @@ def normalize_activity(a: dict) -> dict | None:
     }
 
 
+def parse_fit_biomechanics(fit_bytes: bytes) -> list:
+    """Parsa FIT e ritorna lap di sforzo con GCT, cadenza, oscillazione."""
+    import io
+    try:
+        import fitdecode
+    except ImportError:
+        print("  [warn] fitdecode non installato: pip install fitdecode")
+        return []
+    laps = []
+    with fitdecode.FitReader(io.BytesIO(fit_bytes)) as fit:
+        for frame in fit:
+            if not (isinstance(frame, fitdecode.FitDataMessage) and frame.name == 'lap'):
+                continue
+            d = {f.name: f.value for f in frame.fields if f.value is not None}
+            cad = d.get('avg_running_cadence') or 0
+            dist = d.get('total_distance') or 0
+            hr = d.get('avg_heart_rate') or 0
+            # Solo lap di sforzo (running, non recovery camminate)
+            if cad < 70 or dist < 200 or hr < 145:
+                continue
+            dur = d.get('total_timer_time') or 0
+            pace_s = round(dur / dist * 1000) if dist else None
+            laps.append({
+                'dist_m': round(dist),
+                'pace_s': pace_s,
+                'gct_ms': round(d['avg_stance_time'], 1) if d.get('avg_stance_time') else None,
+                'cadence_spm': round(cad * 2),
+                'osc_mm': round(d['avg_vertical_oscillation'], 1) if d.get('avg_vertical_oscillation') else None,
+                'step_mm': round(d['avg_step_length']) if d.get('avg_step_length') else None,
+                'hr': round(hr),
+            })
+    return laps
+
+
+def sync_biomechanics(client, acts_path: Path, biomech_path: Path, dry_run: bool):
+    """Scarica FIT per ogni sessione in garmin_activities.json e aggiorna biomech.json."""
+    import io, zipfile
+
+    acts = json.loads(acts_path.read_text(encoding='utf-8'))
+    biomech = json.loads(biomech_path.read_text(encoding='utf-8'))
+    existing_ids = {e['id'] for e in biomech.get('rep_biomechanics', [])}
+    rep_bio = list(biomech.get('rep_biomechanics', []))
+
+    for act in acts:
+        if act['id'] in existing_ids:
+            continue
+        if act.get('distance', 0) < 3000:
+            continue
+        label = act['name'].split(' - ')[-1] if ' - ' in act['name'] else act['name']
+        print(f"  FIT {label} {act['start_local'][:10]} ({act['id']}) ...")
+        try:
+            raw = client.download_activity(int(act['id']), dl_fmt=client.ActivityDownloadFormat.ORIGINAL)
+            fit_bytes = zipfile.ZipFile(io.BytesIO(raw)).read(zipfile.ZipFile(io.BytesIO(raw)).namelist()[0])
+        except Exception as e:
+            print(f"    skip: {e}")
+            continue
+        laps = parse_fit_biomechanics(fit_bytes)
+        if not laps:
+            # Nessun lap sforzo — salva comunque un segnaposto per non riscaricare
+            rep_bio.append({'id': act['id'], 'date': act['start_local'][:10],
+                            'label': label, 'reps': [], 'avg': {}})
+            continue
+
+        def _avg(key):
+            vals = [l[key] for l in laps if l.get(key) is not None]
+            return round(sum(vals)/len(vals), 1) if vals else None
+
+        entry = {
+            'id': act['id'],
+            'date': act['start_local'][:10],
+            'label': label,
+            'reps': laps,
+            'avg': {
+                'gct_ms': _avg('gct_ms'),
+                'cadence_spm': int(_avg('cadence_spm')) if _avg('cadence_spm') else None,
+                'osc_mm': _avg('osc_mm'),
+                'step_mm': int(_avg('step_mm')) if _avg('step_mm') else None,
+            }
+        }
+        rep_bio.append(entry)
+        print(f"    {len(laps)} lap · GCT={entry['avg']['gct_ms']}ms "
+              f"cad={entry['avg']['cadence_spm']}spm osc={entry['avg']['osc_mm']}mm")
+
+    rep_bio.sort(key=lambda x: x['date'])
+    biomech['rep_biomechanics'] = rep_bio
+    if not dry_run:
+        biomech_path.write_text(json.dumps(biomech, indent=2, ensure_ascii=False), encoding='utf-8')
+        print(f"  [json] {biomech_path}")
+
+
 def sync_garmin_activities(client, out_path: Path, start_date: date, dry_run: bool):
     """Backfill e aggiornamento continuo di garmin_activities.json.
     Usa paginazione offset-based per recuperare tutte le attività senza limiti di finestra."""
@@ -339,6 +429,8 @@ def main():
                         help="Sincronizza anche garmin_activities.json")
     parser.add_argument("--backfill", default="2026-02-01",
                         help="Data inizio backfill attività (default 2026-02-01)")
+    parser.add_argument("--biomech", action="store_true",
+                        help="Scarica FIT e aggiorna biomech.json con dati biomeccanici")
     args = parser.parse_args()
 
     if args.login:
@@ -367,9 +459,13 @@ def main():
         sink_supabase(all_wellness, all_activities, args.dry_run)
 
     if args.activities:
-        print("\nSync attività Garmin ...")
+        print("\nSync attivita Garmin ...")
         start = date.fromisoformat(args.backfill)
         sync_garmin_activities(client, Path("garmin_activities.json"), start, args.dry_run)
+
+    if args.biomech:
+        print("\nSync biomeccanica FIT ...")
+        sync_biomechanics(client, Path("garmin_activities.json"), Path("biomech.json"), args.dry_run)
 
     print("Fatto.")
 
