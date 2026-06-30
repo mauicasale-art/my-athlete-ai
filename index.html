@@ -865,7 +865,7 @@ async function main() {
   );
 
   // Cadenza — solo corse >= 5km; per T/R usa cadenza effort-only da biomech
-  const cads=acts.filter(a=>a.sport_type==='Run'&&a.avg_cadence&&a.avg_cadence>100&&a.distance>=5000);
+  const cads=acts.filter(a=>a.sport_type==='Run'&&a.avg_cadence&&a.avg_cadence>100&&!/carletta/i.test(a.name));
   const cadColors=cads.map(a=>{const t=classify(a.name);return t==='R'?'#ef4444':t==='T'?'#3b82f6':t==='L'?'#22c55e':'#f97316';});
   mkChart('cadChart',
     cads.map(a=>fmtDate(a.start_local)),
