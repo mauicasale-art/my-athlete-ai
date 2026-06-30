@@ -6,7 +6,11 @@
       "label": "T1",
       "tempo_pace_s": 275,
       "tempo_hr": 180,
-      "reps_pace_s": [269, 284, 271],
+      "reps_pace_s": [
+        269,
+        284,
+        271
+      ],
       "note": "3×2km · rep: 4:29|4:44|4:31 · avg 4:35/km · FC180 effort"
     },
     {
@@ -23,7 +27,11 @@
       "label": "T3",
       "tempo_pace_s": 308,
       "tempo_hr": 177,
-      "reps_pace_s": [307, 312, 304],
+      "reps_pace_s": [
+        307,
+        312,
+        304
+      ],
       "note": "3×2km · rep: 5:07|5:12|5:04 · avg 5:08/km · FC177 · caldo+digiuno"
     },
     {
@@ -32,7 +40,11 @@
       "label": "T4",
       "tempo_pace_s": 342,
       "tempo_hr": 169,
-      "reps_pace_s": [340, 347, 338],
+      "reps_pace_s": [
+        340,
+        347,
+        338
+      ],
       "note": "3×2km · rep: 5:40|5:47|5:38 · avg 5:42/km · FC169 · corsa con amica"
     },
     {

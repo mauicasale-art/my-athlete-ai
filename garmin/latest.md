@@ -4,8 +4,8 @@
 - Resting HR: 53 bpm
 - Sleep: 7.4 h (score 80)
 - Body battery: 5 -> 72
-- Stress (avg): 17
-- Steps: 12451
+- Stress (avg): 30
+- Steps: 14250
 
 ## Attività recenti
 # Torino - T5 — 2026-06-30
@@ -16,4 +16,13 @@
 - Max HR: 195.0 bpm
 - Calories: 869.0 kcal
 - Elevation gain: 15.0 m
+
+# Torino - T4wL — 2026-06-28
+- Type: running
+- Distance: 8.12 km
+- Duration: 51.3 min
+- Avg HR: 165.0 bpm
+- Max HR: 194.0 bpm
+- Calories: 633.0 kcal
+- Elevation gain: 11.0 m
 
