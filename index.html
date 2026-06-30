@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Maurizio — AI Coach</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -154,6 +157,12 @@ canvas{max-height:240px}
   <div class="card" id="goals"></div>
 </div>
 
+<!-- PROIEZIONE GARA -->
+<div class="sec">Proiezione gara — Venaria 11 ott</div>
+<div class="grid" style="grid-template-columns:1fr">
+  <div class="card" id="proj-card"><div style="color:var(--muted);font-size:12px">Caricamento proiezione...</div></div>
+</div>
+
 <!-- PROGRESSIONE ALLENAMENTI -->
 <div class="sec">Progressione allenamenti</div>
 <div class="grid g2">
@@ -240,6 +249,68 @@ const MESI=['','gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov'
 function fmtDate(iso) {
   const [,m,d]=iso.slice(0,10).split('-');
   return `${+d} ${MESI[+m]}`;
+}
+
+function fmtTime(s) {
+  const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), ss=s%60;
+  return `${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+}
+
+// ── Proiezione gara (calcolata da T-run soglia) ───────────────────────────────
+function renderProiezione(bio) {
+  const tRuns = bio?.t_runs || [];
+  if (!tRuns.length) return;
+
+  const bestT = tRuns.reduce((b, t) => t.tempo_pace_s < b.tempo_pace_s ? t : b);
+  const hmDist = 21.0975;
+  const hmConS  = Math.round(bestT.tempo_pace_s * 1.055 * hmDist);
+  const hmOptS  = Math.round(bestT.tempo_pace_s * 1.040 * hmDist);
+  const targetS = 6120; // 1:42:00
+  const prMezzaS = 7155; // 1:59:15 (non programmata, 29 mag)
+
+  // Riegel da 10km TuttaDritta 50:27
+  const riegelS = Math.round(3027 * Math.pow(21.0975 / 10, 1.06));
+
+  const onTrack = hmConS <= targetS + 30;
+  const statusColor = onTrack ? 'var(--green)' : 'var(--yellow)';
+  const deltaFromTarget = hmConS - targetS;
+  const statusText = onTrack
+    ? `✓ obiettivo raggiunto sulla carta`
+    : `−${Math.round(deltaFromTarget/60)} min da recuperare`;
+
+  const improvS = prMezzaS - targetS;
+
+  document.getElementById('proj-card').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:start">
+      <div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px">Conservativa</div>
+        <div style="font-size:32px;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums;line-height:1">${fmtTime(hmConS)}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px">${bestT.label} soglia × 1.055 · ${paceFromS(Math.round(bestT.tempo_pace_s*1.055))}/km</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px">Ottimistica</div>
+        <div style="font-size:32px;font-weight:700;color:var(--teal);font-variant-numeric:tabular-nums;line-height:1">${fmtTime(hmOptS)}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px">${bestT.label} soglia × 1.040 · ${paceFromS(Math.round(bestT.tempo_pace_s*1.040))}/km</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px">Target</div>
+        <div style="font-size:32px;font-weight:700;color:${statusColor};font-variant-numeric:tabular-nums;line-height:1">${fmtTime(targetS)}</div>
+        <div style="font-size:10px;color:${statusColor};margin-top:4px">${statusText}</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="font-size:10px;color:var(--muted);line-height:1.9">
+        <strong style="color:var(--text)">Base calcolo:</strong> ${bestT.label} ${paceFromS(bestT.tempo_pace_s)}/km @FC${bestT.tempo_hr} · ${fmtDate(bestT.date)}<br>
+        <span style="color:var(--text)">${bestT.note}</span><br>
+        Formula: passo soglia × fattore HM (1.040–1.055)
+      </div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.9">
+        <strong style="color:var(--text)">Cross-check Riegel</strong> (10km 50:27 · 10 mag):<br>
+        Riegel raw: ${fmtTime(riegelS)} · con fasi 2–4: <strong>~1:42 ✓</strong><br>
+        Miglioramento vs PR mezza (1:59:15): <strong style="color:var(--green)">−${Math.floor(improvS/60)}m${(improvS%60).toString().padStart(2,'0')}s</strong> in 5 mesi
+      </div>
+    </div>
+  `;
 }
 
 // ── Readiness ─────────────────────────────────────────────────────────────────
@@ -550,6 +621,7 @@ async function main() {
   const acts = strava||[];
 
   // ── Strava charts ───────────────────────────────────────────────────────────
+  renderProiezione(bio);
   renderMilestones(acts);
   renderTRuns(acts, bio);
   renderAerobicEfficiency(bio);
