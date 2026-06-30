@@ -398,9 +398,21 @@ function renderGoals(){
 }
 
 // ── Chart factory ──────────────────────────────────────────────────────────────
+// Altezze fisse per tipo di grafico — i piccoli (wellness, donut) restano compatti
+const CHART_H = {typeChart:260, hrChart:240, bbChart:240, slpChart:240, strChart:240};
 function mkChart(id, labels, datasets, yOpts={}, type='line') {
+  const canvas = document.getElementById(id);
+  // Wrappa in un div position:relative con altezza fissa — evita il resize loop infinito
+  if (!canvas.parentElement.dataset.chartWrap) {
+    const h = CHART_H[id] || 480;
+    const wrap = document.createElement('div');
+    wrap.dataset.chartWrap = '1';
+    wrap.style.cssText = `position:relative;height:${h}px;width:100%`;
+    canvas.parentNode.insertBefore(wrap, canvas);
+    wrap.appendChild(canvas);
+  }
   const {ticks: yTicksExtra={}, ...yRest} = yOpts;
-  new Chart(document.getElementById(id).getContext('2d'), {
+  new Chart(canvas.getContext('2d'), {
     type,
     data:{labels, datasets: datasets.map(d=>({
       ...d, borderWidth:2, pointRadius:3, tension:0.3,
@@ -408,7 +420,7 @@ function mkChart(id, labels, datasets, yOpts={}, type='line') {
       backgroundColor: type==='line' && datasets.length===1 ? d.borderColor+'15' : d.backgroundColor||d.borderColor+'cc',
     }))},
     options:{
-      responsive:true, maintainAspectRatio:true, aspectRatio:0.8,
+      responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:datasets.length>1,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:6}}},
       scales:{
         x:{ticks:{color:'#8892a4',font:{size:9},maxTicksLimit:10},grid:{color:'#2a2d3a'}},
