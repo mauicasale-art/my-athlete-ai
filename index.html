@@ -832,10 +832,10 @@ async function main() {
     const effortHR = hrReps.length ? Math.round(hrReps.reduce((s,r)=>s+r.hr,0)/hrReps.length) : null;
     const cadReps = effortReps.filter(r=>r.cadence_spm > 0);
     const effortCad = cadReps.length ? Math.round(cadReps.reduce((s,r)=>s+r.cadence_spm,0)/cadReps.length) : null;
-    // Rilevamento automatico sessione intervallata: ≥2 lap veloci (<240s) + ≥2 lap lenti (>300s)
+    // Rilevamento sessione intervallata: flag esplicito in biomech.json o bimodale automatico
     const fastLaps = e.reps.filter(r => r.pace_s < 240);
     const slowLaps = e.reps.filter(r => r.pace_s > 300);
-    const isInterval = fastLaps.length >= 2 && slowLaps.length >= 2;
+    const isInterval = e.is_interval === true || (fastLaps.length >= 2 && slowLaps.length >= 2);
     bioByDate[e.date] = {
       effort_pace_min: effortPaceS ? Math.round(effortPaceS/60*100)/100 : null,
       effort_hr: effortHR,

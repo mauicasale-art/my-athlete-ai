@@ -407,6 +407,7 @@
       "id": "23015004384",
       "date": "2026-05-26",
       "label": "A3",
+      "is_interval": true,
       "reps": [
         {
           "dist_m": 1000,
