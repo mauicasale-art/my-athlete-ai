@@ -236,6 +236,7 @@ const RAW = 'https://raw.githubusercontent.com/mauicasale-art/my-athlete-ai/main
 const GARMIN_URL = RAW + 'garmin/data.json';
 const GARMIN_ACTS_URL = RAW + 'garmin_activities.json';
 const STRAVA_URL = RAW + 'strava_activities.json';
+const STRAVA_LAPS_URL = RAW + 'strava_laps.json';
 const BIOMECH_URL = RAW + 'biomech.json';
 
 // ── Classificatore sessioni ────────────────────────────────────────────────────
@@ -781,11 +782,12 @@ async function main() {
   renderGoals();
 
   const t = Date.now();
-  const [garmin, garminActs, strava, bio] = await Promise.all([
+  const [garmin, garminActs, strava, bio, stravaLaps] = await Promise.all([
     fetch(GARMIN_URL+'?t='+t).then(r=>r.json()).catch(()=>null),
     fetch(GARMIN_ACTS_URL+'?t='+t).then(r=>r.json()).catch(()=>null),
     fetch(STRAVA_URL+'?t='+t).then(r=>r.json()).catch(()=>null),
     fetch(BIOMECH_URL+'?t='+t).then(r=>r.json()).catch(()=>null),
+    fetch(STRAVA_LAPS_URL+'?t='+t).then(r=>r.json()).catch(()=>null),
   ]);
 
   // Strava a volte invia half-cadence (~72-80), a volte già full spm (~145-160)
@@ -843,6 +845,41 @@ async function main() {
       label: e.label,
       is_interval: isInterval,
     };
+  }
+
+  // Strava laps: fallback effort per sessioni dove Garmin non ha split bimodali
+  // Costruisci lapsByDate: {date → laps[]} usando id attività come ponte
+  if (stravaLaps) {
+    const actById = {};
+    for (const a of acts) actById[a.id] = a;
+    for (const [actId, laps] of Object.entries(stravaLaps)) {
+      const act = actById[actId];
+      if (!act || act.sport_type !== 'Run' || !laps?.length) continue;
+      const date = act.start_local.slice(0, 10);
+      // Usa Strava laps SOLO se non abbiamo già effort da Garmin (effort_pace_min null o is_interval non rilevato)
+      const existing = bioByDate[date];
+      if (existing?.effort_pace_min && existing?.is_interval) continue;
+      // Filtra laps con pace valido (escludi laps troppo corti <50m = transizioni)
+      const validLaps = laps.filter(l => l.pace_s && l.dist_m >= 50);
+      if (!validLaps.length) continue;
+      const fastL = validLaps.filter(l => l.pace_s < 260); // <4:20/km = sforzo
+      const slowL = validLaps.filter(l => l.pace_s > 300); // >5:00/km = recupero
+      const isIv = fastL.length >= 2 && slowL.length >= 2;
+      if (!isIv) continue; // non è una sessione intervallata
+      const hrFast = fastL.filter(l => l.hr);
+      const cadFast = fastL.filter(l => l.cadence_spm);
+      const effortPaceS = fastL.reduce((s,l)=>s+l.pace_s,0)/fastL.length;
+      const effortHR = hrFast.length ? Math.round(hrFast.reduce((s,l)=>s+l.hr,0)/hrFast.length) : null;
+      const effortCad = cadFast.length ? Math.round(cadFast.reduce((s,l)=>s+l.cadence_spm,0)/cadFast.length) : null;
+      bioByDate[date] = {
+        ...(existing || {}),
+        effort_pace_min: Math.round(effortPaceS/60*100)/100,
+        effort_hr: effortHR,
+        effort_cad: effortCad,
+        is_interval: true,
+        from_strava_laps: true,
+      };
+    }
   }
 
   // ── Strava charts ───────────────────────────────────────────────────────────

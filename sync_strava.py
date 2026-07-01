@@ -35,6 +35,7 @@ CLIENT_ID     = os.environ.get("STRAVA_CLIENT_ID", "")
 CLIENT_SECRET = os.environ.get("STRAVA_CLIENT_SECRET", "")
 REFRESH_TOKEN = os.environ.get("STRAVA_REFRESH_TOKEN", "")
 OUT_FILE      = Path("strava_activities.json")
+LAPS_FILE     = Path("strava_laps.json")
 
 BASE = "https://www.strava.com/api/v3"
 
@@ -104,6 +105,31 @@ def normalize(a: dict) -> dict:
     }
 
 
+# ── Laps ───────────────────────────────────────────────────────────────────────
+
+def fetch_laps(token: str, act_id: str) -> list:
+    url = f"{BASE}/activities/{act_id}/laps"
+    req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
+    try:
+        with urllib.request.urlopen(req, context=_ssl_ctx) as r:
+            return json.loads(r.read())
+    except Exception as e:
+        print(f"  warn: laps {act_id} fallito: {e}")
+        return []
+
+
+def normalize_lap(lap: dict) -> dict:
+    spd = lap.get("average_speed", 0)
+    cad = lap.get("average_cadence")
+    return {
+        "pace_s": round(1000 / spd) if spd else None,
+        "cadence_spm": round(cad * 2) if cad else None,
+        "hr": lap.get("average_heartrate"),
+        "dist_m": round(lap.get("distance", 0)),
+        "elapsed_s": lap.get("elapsed_time", 0),
+    }
+
+
 # ── Merge ──────────────────────────────────────────────────────────────────────
 
 def merge(existing: list, new_acts: list) -> list:
@@ -120,6 +146,7 @@ def main():
     parser.add_argument("--exchange-code", metavar="CODE", help="Scambia codice OAuth con refresh token")
     parser.add_argument("--days", type=int, default=3, help="Giorni di storia da scaricare")
     parser.add_argument("--all", action="store_true", help="Scarica tutta la storia disponibile")
+    parser.add_argument("--fetch-laps", action="store_true", help="Scarica lap splits per le attività (aggiorna strava_laps.json)")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
@@ -150,6 +177,20 @@ def main():
     else:
         OUT_FILE.write_text(json.dumps(merged, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"  scritto {OUT_FILE} ({len(merged)} attività totali)")
+
+    # ── Lap splits ─────────────────────────────────────────────────────────────
+    if args.fetch_laps and not args.dry_run:
+        existing_laps = json.loads(LAPS_FILE.read_text(encoding="utf-8")) if LAPS_FILE.exists() else {}
+        # Fetch laps per tutte le Run non ancora presenti
+        runs_to_fetch = [a for a in merged if a.get("sport_type") == "Run" and a["id"] not in existing_laps]
+        print(f"Fetching laps per {len(runs_to_fetch)} run (già presenti: {len(existing_laps)})...")
+        for i, a in enumerate(runs_to_fetch):
+            raw_laps = fetch_laps(token, a["id"])
+            existing_laps[a["id"]] = [normalize_lap(l) for l in raw_laps]
+            if (i + 1) % 10 == 0:
+                print(f"  {i+1}/{len(runs_to_fetch)}...")
+        LAPS_FILE.write_text(json.dumps(existing_laps, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(f"  scritto {LAPS_FILE} ({len(existing_laps)} attività con laps)")
 
     print("Fatto.")
 
