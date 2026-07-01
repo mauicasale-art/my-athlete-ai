@@ -164,17 +164,23 @@ header .sub{font-size:11px;color:var(--muted);margin-top:2px}
 
 <!-- PROGRESSIONE ALLENAMENTI -->
 <div class="sec">Progressione allenamenti</div>
-<div class="grid" style="grid-template-columns:repeat(5,1fr)">
+<div class="grid" style="grid-template-columns:repeat(3,1fr)">
   <div class="card">
     <h2>Tempo Run — progressione soglia</h2>
     <canvas id="tChart"></canvas>
     <table class="t-table" id="t-table"></table>
   </div>
   <div class="card">
+    <h2>Ripetute — progressione passo sforzo</h2>
+    <canvas id="rChart"></canvas>
+  </div>
+  <div class="card">
     <h2>Efficienza aerobica — passo a FC 145-162 (Z2)</h2>
     <canvas id="aerChart"></canvas>
     <div id="aer-note" style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.6"></div>
   </div>
+</div>
+<div class="grid" style="grid-template-columns:repeat(3,1fr)">
   <div class="card">
     <h2>Carico settimanale per tipo (km)</h2>
     <canvas id="typeChart"></canvas>
@@ -238,10 +244,11 @@ function classify(name) {
   // Formato Garmin: "Torino - T5", "Torino - R4", "Torino - L1", ecc.
   // Formato manuale: "T5 — ...", "R4 — ...", "T5", ecc.
   if (/[\s\-—]\s*R\d|^R\d|\bRIPETUT/.test(n)) return 'R';
+  if (/\bALTERNATO|\bSERIE A SCALARE|\bRITMO GARA.*1KM|1KM.*RITMO|\bRITMO.*1KM|30-1\b|90"-90"|\bSCALARE/.test(n)) return 'R';
   if (/[\s\-—]\s*T\d|^T\d|\bTEMPO/.test(n)) return 'T';
-  if (/[\s\-—]\s*L\d|^L\d|\bLUNGO/.test(n)) return 'L';
+  if (/[\s\-—]\s*L\d|^L\d|\bLUNGO|\bPROGRESSIVO/.test(n)) return 'L';
   if (/[\s\-—]\s*F[\dW]?$|[\s\-—]\s*F\d|^F\d|\bRECUPERO|\bFACILE/.test(n)) return 'F';
-  if (/[\s\-—]\s*[AB]\d|FORZA/.test(n)) return 'X'; // sessioni forza
+  if (/[\s\-—]\s*[AB]\d|FORZA/.test(n)) return 'X';
   if (/MEZZA|21K/.test(n)) return 'L';
   if (/WALK|CAMMINAT/.test(n)) return 'W';
   return 'X';
@@ -536,31 +543,19 @@ function renderTRuns(acts, bio) {
       data: {
         labels,
         datasets: [
-          // scatter punti passo
-          { label:'Passo sforzo', data:paceVals, yAxisID:'yPace',
-            borderColor:'#3b82f6', pointBackgroundColor:'#3b82f6',
-            showLine:false, pointRadius:7, pointHoverRadius:9 },
-          // trend passo tratteggiata
-          { label:'Trend passo', data:linReg(paceVals), yAxisID:'yPace',
-            borderColor:'rgba(59,130,246,0.3)', borderDash:[6,4],
-            showLine:true, pointRadius:0, fill:false, borderWidth:1.5 },
-          // scatter punti FC
-          { label:'FC sforzo', data:hrVals, yAxisID:'yHR',
-            borderColor:'#ef4444', pointBackgroundColor:'#ef4444',
-            showLine:false, pointRadius:7, pointHoverRadius:9 },
-          // trend FC tratteggiata
-          { label:'Trend FC', data:linReg(hrVals), yAxisID:'yHR',
-            borderColor:'rgba(239,68,68,0.3)', borderDash:[6,4],
-            showLine:true, pointRadius:0, fill:false, borderWidth:1.5 },
+          { label:'Passo sforzo (min/km)', data:paceVals, yAxisID:'yPace',
+            borderColor:'#3b82f6', backgroundColor:'#3b82f620', pointBackgroundColor:'#3b82f6',
+            borderWidth:2, pointRadius:7, pointHoverRadius:9, tension:0.1, fill:false },
+          { label:'FC sforzo (bpm)', data:hrVals, yAxisID:'yHR',
+            borderColor:'#ef4444', backgroundColor:'#ef444420', pointBackgroundColor:'#ef4444',
+            borderWidth:2, pointRadius:7, pointHoverRadius:9, tension:0.1, fill:false },
         ],
       },
       options: {
         responsive:true, maintainAspectRatio:false,
         plugins: {
-          legend:{display:true,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:8,
-            filter: item => !item.text.startsWith('Trend')}},
+          legend:{display:true,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:8}},
           tooltip:{callbacks:{label: ctx => {
-            if(ctx.dataset.showLine) return null; // nascondi tooltip trend
             if(ctx.dataset.yAxisID==='yPace') {
               const v=ctx.raw, m=Math.floor(v), s=Math.round((v-m)*60).toString().padStart(2,'0');
               return `Passo: ${m}:${s}/km  —  ${threshData[ctx.dataIndex]?.note||''}`;
@@ -837,11 +832,16 @@ async function main() {
     const effortHR = hrReps.length ? Math.round(hrReps.reduce((s,r)=>s+r.hr,0)/hrReps.length) : null;
     const cadReps = effortReps.filter(r=>r.cadence_spm > 0);
     const effortCad = cadReps.length ? Math.round(cadReps.reduce((s,r)=>s+r.cadence_spm,0)/cadReps.length) : null;
+    // Rilevamento automatico sessione intervallata: ≥2 lap veloci (<240s) + ≥2 lap lenti (>300s)
+    const fastLaps = e.reps.filter(r => r.pace_s < 240);
+    const slowLaps = e.reps.filter(r => r.pace_s > 300);
+    const isInterval = fastLaps.length >= 2 && slowLaps.length >= 2;
     bioByDate[e.date] = {
       effort_pace_min: effortPaceS ? Math.round(effortPaceS/60*100)/100 : null,
       effort_hr: effortHR,
       effort_cad: effortCad,
       label: e.label,
+      is_interval: isInterval,
     };
   }
 
@@ -894,8 +894,11 @@ async function main() {
   const runs5=acts.filter(a=>a.sport_type==='Run'&&a.distance>=5000);
   const actType=a=>{
     const t=classify(a.name);
-    // fallback: se Strava non classifica, prova label biomech
-    if(t==='X'||t==='F'){const bio=bioByDate[a.start_local.slice(0,10)];if(bio)return classify(bio.label);}
+    const bio=bioByDate[a.start_local.slice(0,10)];
+    // Se biomech rileva struttura bimodale (lap veloci+lenti) → intervallata = R
+    if(bio?.is_interval) return 'R';
+    // Fallback: se Strava non classifica, prova label biomech
+    if((t==='X'||t==='F') && bio) return classify(bio.label);
     return t;
   };
   const paceColors=runs5.map(a=>{const t=actType(a);return t==='R'?'#ef4444':t==='T'?'#3b82f6':t==='L'?'#22c55e':'#f97316';});
@@ -935,6 +938,33 @@ async function main() {
     ],
     {ticks:{callback:v=>v+' spm'}}
   );
+
+  // rChart — progressione passo sforzo ripetute
+  {
+    const rActs = acts.filter(a => a.sport_type==='Run' && actType(a)==='R');
+    const rLabels = rActs.map(a => fmtDate(a.start_local));
+    const rPaceData = rActs.map(a => {
+      const d = a.start_local.slice(0,10);
+      const bio = bioByDate[d];
+      return bio?.effort_pace_min ?? paceMin(a.avg_speed);
+    });
+    const rColors = rActs.map(a => bioByDate[a.start_local.slice(0,10)]?.effort_pace_min ? '#ef4444' : '#ef444466');
+    const rNames = rActs.map(a => a.name);
+    mkChart('rChart', rLabels, [
+      { label:'Passo sforzo (min/km)', data:rPaceData,
+        borderColor:rColors, pointBackgroundColor:rColors,
+        showLine:false, pointRadius:6, pointHoverRadius:8 },
+      { label:'trend', data:linReg(rPaceData), borderColor:'rgba(239,68,68,0.35)',
+        borderDash:[6,4], showLine:true, pointRadius:0, fill:false, borderWidth:1.5 },
+    ], {reverse:true, ticks:{callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}}},
+    'line', ctx => {
+      if (ctx.datasetIndex === 1) return null;
+      const v = ctx.raw;
+      const m = Math.floor(v), s = Math.round((v-m)*60).toString().padStart(2,'0');
+      const hasBio = !!bioByDate[rActs[ctx.dataIndex]?.start_local?.slice(0,10)]?.effort_pace_min;
+      return `${rNames[ctx.dataIndex]}: ${m}:${s}/km${hasBio ? ' ⚡' : ' (media)'}`;
+    });
+  }
 
   // Activities list
   const ul=document.getElementById('acts');
