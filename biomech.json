@@ -2006,6 +2006,109 @@
         "osc_mm": 101.4,
         "step_mm": 1242
       }
+    },
+    {
+      "id": "23449497797",
+      "date": "2026-07-02",
+      "label": "R5-6",
+      "reps": [
+        {
+          "dist_m": 1000,
+          "pace_s": 340,
+          "gct_ms": 283.9,
+          "cadence_spm": 156,
+          "osc_mm": 97.2,
+          "step_mm": 1106,
+          "hr": 157
+        },
+        {
+          "dist_m": 1000,
+          "pace_s": 349,
+          "gct_ms": 288.1,
+          "cadence_spm": 156,
+          "osc_mm": 97.5,
+          "step_mm": 1097,
+          "hr": 166
+        },
+        {
+          "dist_m": 1000,
+          "pace_s": 348,
+          "gct_ms": 290.0,
+          "cadence_spm": 156,
+          "osc_mm": 97.9,
+          "step_mm": 1096,
+          "hr": 167
+        },
+        {
+          "dist_m": 468,
+          "pace_s": 348,
+          "gct_ms": 289.8,
+          "cadence_spm": 156,
+          "osc_mm": 97.2,
+          "step_mm": 1086,
+          "hr": 166
+        },
+        {
+          "dist_m": 426,
+          "pace_s": 211,
+          "gct_ms": 213.3,
+          "cadence_spm": 168,
+          "osc_mm": 99.0,
+          "step_mm": 1555,
+          "hr": 175
+        },
+        {
+          "dist_m": 417,
+          "pace_s": 216,
+          "gct_ms": 214.0,
+          "cadence_spm": 174,
+          "osc_mm": 99.3,
+          "step_mm": 1549,
+          "hr": 179
+        },
+        {
+          "dist_m": 427,
+          "pace_s": 211,
+          "gct_ms": 214.0,
+          "cadence_spm": 168,
+          "osc_mm": 101.8,
+          "step_mm": 1607,
+          "hr": 180
+        },
+        {
+          "dist_m": 405,
+          "pace_s": 222,
+          "gct_ms": 235.3,
+          "cadence_spm": 170,
+          "osc_mm": 103.1,
+          "step_mm": 1503,
+          "hr": 179
+        },
+        {
+          "dist_m": 391,
+          "pace_s": 230,
+          "gct_ms": 232.7,
+          "cadence_spm": 166,
+          "osc_mm": 106.3,
+          "step_mm": 1555,
+          "hr": 180
+        },
+        {
+          "dist_m": 444,
+          "pace_s": 202,
+          "gct_ms": 209.5,
+          "cadence_spm": 178,
+          "osc_mm": 99.4,
+          "step_mm": 1616,
+          "hr": 176
+        }
+      ],
+      "avg": {
+        "gct_ms": 247.1,
+        "cadence_spm": 164,
+        "osc_mm": 99.9,
+        "step_mm": 1377
+      }
     }
   ]
 }
