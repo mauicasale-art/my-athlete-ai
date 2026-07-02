@@ -539,17 +539,11 @@ function renderTRuns(acts, bio) {
       data: {
         labels,
         datasets: [
-          { label:'Passo sforzo (min/km)', data:paceVals, yAxisID:'yPace',
+          { label:'Passo sforzo (min/km)', data:paceVals,
             borderColor:'#3b82f6', pointBackgroundColor:'#3b82f6',
             showLine:false, pointRadius:7, pointHoverRadius:9 },
-          { label:'trend passo', data:linReg(paceVals), yAxisID:'yPace',
+          { label:'trend passo', data:linReg(paceVals),
             borderColor:'rgba(59,130,246,0.4)', borderDash:[6,4],
-            showLine:true, pointRadius:0, fill:false, borderWidth:1.5 },
-          { label:'FC sforzo (bpm)', data:hrVals, yAxisID:'yHR',
-            borderColor:'#ef4444', pointBackgroundColor:'#ef4444',
-            showLine:false, pointRadius:7, pointHoverRadius:9 },
-          { label:'trend FC', data:linReg(hrVals), yAxisID:'yHR',
-            borderColor:'rgba(239,68,68,0.4)', borderDash:[6,4],
             showLine:true, pointRadius:0, fill:false, borderWidth:1.5 },
         ],
       },
@@ -560,24 +554,16 @@ function renderTRuns(acts, bio) {
             filter:item=>!item.text.startsWith('trend')}},
           tooltip:{callbacks:{label: ctx => {
             if(ctx.dataset.showLine) return null;
-            if(ctx.dataset.yAxisID==='yPace') {
-              const v=ctx.raw, m=Math.floor(v), s=Math.round((v-m)*60).toString().padStart(2,'0');
-              return `Passo: ${m}:${s}/km  —  ${threshData[ctx.dataIndex]?.note||''}`;
-            }
-            return `FC: ${ctx.raw} bpm`;
+            const v=ctx.raw, m=Math.floor(v), s=Math.round((v-m)*60).toString().padStart(2,'0');
+            return `${m}:${s}/km  —  ${threshData[ctx.dataIndex]?.note||''}`;
           }}}
         },
         scales: {
           x:{ticks:{color:'#8892a4',font:{size:10}},grid:{color:'#2a2d3a'}},
-          yPace:{type:'linear',position:'left',reverse:true,
+          y:{reverse:true,
             ticks:{color:'#3b82f6',font:{size:10},
               callback:v=>{const m=Math.floor(v),s=Math.round((v-m)*60).toString().padStart(2,'0');return`${m}:${s}`}},
-            grid:{color:'#2a2d3a'},
-            title:{display:true,text:'min/km',color:'#3b82f6',font:{size:9}}},
-          yHR:{type:'linear',position:'right',
-            ticks:{color:'#ef4444',font:{size:10}},
-            grid:{display:false},
-            title:{display:true,text:'FC bpm',color:'#ef4444',font:{size:9}}},
+            grid:{color:'#2a2d3a'}},
         },
       },
     });
