@@ -197,16 +197,11 @@ header .sub{font-size:11px;color:var(--muted);margin-top:2px}
 
 <!-- BIOMECCANICA -->
 <div class="sec">Progressione biomeccanica</div>
-<div class="grid g2">
+<div class="grid" style="grid-template-columns:1fr">
   <div class="card">
     <h2>GCT — Ground Contact Time (ms)</h2>
     <canvas id="gctChart"></canvas>
     <div id="gct-note" style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.6"></div>
-  </div>
-  <div class="card">
-    <h2>Cadenza (passi/min)</h2>
-    <canvas id="cadBioChart"></canvas>
-    <div id="cad-note" style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.6"></div>
   </div>
 </div>
 
@@ -735,46 +730,10 @@ function renderBiomechanics(bio) {
     `Min lap: <strong>${minLap.label} ${Math.round(minLap.val)}ms</strong> (${fmtDate(minLap.date)}) &nbsp;·&nbsp;` +
     (delta>0 ? `<strong style="color:var(--green)">−${delta}ms</strong> dal ${fmtDate(first.date)}` : 'trend in corso');
 
-  // Cadenza chart
-  new Chart(document.getElementById('cadBioChart').getContext('2d'), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Cadenza media lap sforzo (spm)',
-        data: cadData,
-        borderColor: entries.map(e => typeColor(e.label).border),
-        backgroundColor: entries.map(e => typeColor(e.label).bg),
-        borderWidth: 2,
-        pointRadius: 6,
-        pointHoverRadius: 8,
-        pointBackgroundColor: entries.map(e => typeColor(e.label).border),
-        tension: 0.2,
-        segment: {borderColor: ctx => typeColor(entries[ctx.p1DataIndex]?.label||'').border},
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: true,
-      plugins: {
-        legend: {display: false},
-        tooltip: {callbacks: {
-          label: ctx => {
-            const e = entries[ctx.dataIndex];
-            return [`${e.label}: ${ctx.raw} spm`, `GCT ${e.avg.gct_ms}ms · osc ${e.avg.osc_mm}mm`];
-          }
-        }}
-      },
-      scales: {
-        x: {ticks:{color:'#8892a4',font:{size:9}}, grid:{color:'#2a2d3a'}},
-        y: {min:140, max:175, ticks:{color:'#8892a4',font:{size:9}, callback:v=>v+' spm'}, grid:{color:'#2a2d3a'}}
-      }
-    }
-  });
-
   const bestCad = entries.reduce((b,e) => e.avg.cadence_spm > b.avg.cadence_spm ? e : b);
-  document.getElementById('cad-note').innerHTML =
-    `Best: <strong>${bestCad.label} ${bestCad.avg.cadence_spm}spm</strong> (${fmtDate(bestCad.date)}) &nbsp;·&nbsp;` +
-    `Oscillazione media: <strong>${Math.round(entries.slice(-3).reduce((s,e)=>s+(e.avg.osc_mm||0),0)/3)}mm</strong> (ultime 3 sess.)`;
+  document.getElementById('gct-note').innerHTML +=
+    ` &nbsp;·&nbsp; Cadenza best: <strong>${bestCad.label} ${bestCad.avg.cadence_spm}spm</strong> (${fmtDate(bestCad.date)})` +
+    ` · Osc. media: <strong>${Math.round(entries.slice(-3).reduce((s,e)=>s+(e.avg.osc_mm||0),0)/3)}mm</strong> (ultime 3 sess.)`;
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -928,16 +887,15 @@ async function main() {
   }
 
   // Pace trend (>5km) — scatter + trend line tratteggiata
-  const runs5=acts.filter(a=>a.sport_type==='Run'&&a.distance>=5000);
+  const R_START = '2026-05-13';
   const actType=a=>{
     const t=classify(a.name);
     const bio=bioByDate[a.start_local.slice(0,10)];
-    // Se biomech rileva struttura bimodale (lap veloci+lenti) → intervallata = R
     if(bio?.is_interval) return 'R';
-    // Fallback: se Strava non classifica, prova label biomech
     if((t==='X'||t==='F') && bio) return classify(bio.label);
     return t;
   };
+  const runs5=acts.filter(a=>a.sport_type==='Run'&&a.distance>=5000&&!(actType(a)==='R'&&a.start_local<R_START));
   const paceColors=runs5.map(a=>{const t=actType(a);return t==='R'?'#ef4444':t==='T'?'#3b82f6':t==='L'?'#22c55e':'#f97316';});
   const paceData=runs5.map(a=>{
     const d=a.start_local.slice(0,10), t=actType(a), bio=bioByDate[d];
@@ -958,7 +916,7 @@ async function main() {
   );
 
   // Cadenza — scatter + trend line; effort-only per T/R
-  const cads=acts.filter(a=>a.sport_type==='Run'&&a.avg_cadence&&a.avg_cadence>100&&!/carletta/i.test(a.name));
+  const cads=acts.filter(a=>a.sport_type==='Run'&&a.avg_cadence&&a.avg_cadence>100&&!/carletta/i.test(a.name)&&!(actType(a)==='R'&&a.start_local<R_START));
   const cadColors=cads.map(a=>{const t=actType(a);return t==='R'?'#ef4444':t==='T'?'#3b82f6':t==='L'?'#22c55e':'#f97316';});
   const cadData=cads.map(a=>{
     const d=a.start_local.slice(0,10), t=actType(a), bio=bioByDate[d];
@@ -978,7 +936,7 @@ async function main() {
 
   // rChart — progressione passo sforzo ripetute
   {
-    const rActs = acts.filter(a => a.sport_type==='Run' && actType(a)==='R');
+    const rActs = acts.filter(a => a.sport_type==='Run' && actType(a)==='R' && a.start_local >= R_START);
     const rLabels = rActs.map(a => fmtDate(a.start_local));
     const rPaceData = rActs.map(a => {
       const d = a.start_local.slice(0,10);
