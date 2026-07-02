@@ -540,18 +540,26 @@ function renderTRuns(acts, bio) {
         labels,
         datasets: [
           { label:'Passo sforzo (min/km)', data:paceVals, yAxisID:'yPace',
-            borderColor:'#3b82f6', backgroundColor:'#3b82f620', pointBackgroundColor:'#3b82f6',
-            borderWidth:2, pointRadius:7, pointHoverRadius:9, tension:0.1, fill:false },
+            borderColor:'#3b82f6', pointBackgroundColor:'#3b82f6',
+            showLine:false, pointRadius:7, pointHoverRadius:9 },
+          { label:'trend passo', data:linReg(paceVals), yAxisID:'yPace',
+            borderColor:'rgba(59,130,246,0.4)', borderDash:[6,4],
+            showLine:true, pointRadius:0, fill:false, borderWidth:1.5 },
           { label:'FC sforzo (bpm)', data:hrVals, yAxisID:'yHR',
-            borderColor:'#ef4444', backgroundColor:'#ef444420', pointBackgroundColor:'#ef4444',
-            borderWidth:2, pointRadius:7, pointHoverRadius:9, tension:0.1, fill:false },
+            borderColor:'#ef4444', pointBackgroundColor:'#ef4444',
+            showLine:false, pointRadius:7, pointHoverRadius:9 },
+          { label:'trend FC', data:linReg(hrVals), yAxisID:'yHR',
+            borderColor:'rgba(239,68,68,0.4)', borderDash:[6,4],
+            showLine:true, pointRadius:0, fill:false, borderWidth:1.5 },
         ],
       },
       options: {
         responsive:true, maintainAspectRatio:false,
         plugins: {
-          legend:{display:true,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:8}},
+          legend:{display:true,labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:8,
+            filter:item=>!item.text.startsWith('trend')}},
           tooltip:{callbacks:{label: ctx => {
+            if(ctx.dataset.showLine) return null;
             if(ctx.dataset.yAxisID==='yPace') {
               const v=ctx.raw, m=Math.floor(v), s=Math.round((v-m)*60).toString().padStart(2,'0');
               return `Passo: ${m}:${s}/km  —  ${threshData[ctx.dataIndex]?.note||''}`;
