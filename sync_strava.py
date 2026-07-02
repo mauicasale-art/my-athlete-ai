@@ -48,9 +48,14 @@ def exchange_code(code: str):
         "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET,
         "code": code, "grant_type": "authorization_code",
     }).encode()
+    print(f"  CLIENT_ID={CLIENT_ID!r}  CLIENT_SECRET={CLIENT_SECRET[:4]+'...' if CLIENT_SECRET else 'NON IMPOSTATO'}")
     req = urllib.request.Request("https://www.strava.com/oauth/token", data=data)
-    with urllib.request.urlopen(req, context=_ssl_ctx) as r:
-        resp = json.loads(r.read())
+    try:
+        with urllib.request.urlopen(req, context=_ssl_ctx) as r:
+            resp = json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        print(f"Errore Strava: {e.read().decode()}")
+        raise
     print(f"\nAtleta: {resp['athlete']['firstname']} {resp['athlete']['lastname']}")
     print(f"\n=== STRAVA_REFRESH_TOKEN ===\n{resp['refresh_token']}\n=== FINE ===\n")
     print("Aggiungi questo valore come secret STRAVA_REFRESH_TOKEN su GitHub.")
