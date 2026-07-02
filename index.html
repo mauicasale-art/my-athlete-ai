@@ -815,9 +815,10 @@ async function main() {
       const act = actById[actId];
       if (!act || act.sport_type !== 'Run' || !laps?.length) continue;
       const date = act.start_local.slice(0, 10);
-      // Usa Strava laps SOLO se non abbiamo già effort da Garmin (effort_pace_min null o is_interval non rilevato)
+      // T-run dates: usa sempre Garmin (passo soglia authoritative da test)
+      // Sessioni R: Strava laps preferiti (split interval corretti vs km-lap Garmin)
       const existing = bioByDate[date];
-      if (existing?.effort_pace_min && existing?.is_interval) continue;
+      if (tRunsByDate[date]) continue;
       // Filtra laps con pace valido (escludi laps troppo corti <50m = transizioni)
       const validLaps = laps.filter(l => l.pace_s && l.dist_m >= 50);
       if (!validLaps.length) continue;
