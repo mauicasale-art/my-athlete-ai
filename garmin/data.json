@@ -835,15 +835,15 @@
           "endTimeGMT": "2026-07-08 06:35:09",
           "qualifyingDive": false,
           "activityUUID": "7a78060f-3e7e-46cd-b0cd-ad6714eee916",
-          "decoDive": false,
+          "autoCalcCalories": false,
           "elevationCorrected": false,
           "atpActivity": false,
-          "purposeful": false,
-          "manualActivity": false,
-          "autoCalcCalories": false,
-          "favorite": false,
           "pr": false,
-          "parent": false
+          "favorite": false,
+          "decoDive": false,
+          "purposeful": false,
+          "parent": false,
+          "manualActivity": false
         }
       ]
     },
