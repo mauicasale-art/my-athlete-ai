@@ -874,5 +874,21 @@
     "relative_effort": 155.0,
     "calories": null,
     "kudos_count": 6
+  },
+  {
+    "id": "19224516036",
+    "name": "Corsa mattutina - R6",
+    "sport_type": "Run",
+    "start_local": "2026-07-08T07:39:00",
+    "distance": 9729.0,
+    "moving_time": 3296,
+    "elevation_gain": 22.0,
+    "avg_speed": 2.952,
+    "avg_cadence": 156.4,
+    "avg_hr": 172.4,
+    "max_hr": 192.0,
+    "relative_effort": 144.0,
+    "calories": null,
+    "kudos_count": 7
   }
 ]
