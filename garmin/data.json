@@ -1,11 +1,22 @@
 {
   "wellness": [
     {
+      "date": "2026-07-09",
+      "resting_hr": 50,
+      "steps": 6931,
+      "stress_avg": 29,
+      "body_battery_start": 5,
+      "body_battery_end": 61,
+      "sleep_seconds": 25080,
+      "sleep_score": 80,
+      "hrv_overnight": null
+    },
+    {
       "date": "2026-07-08",
       "resting_hr": 48,
-      "steps": 10245,
-      "stress_avg": 18,
-      "body_battery_start": 14,
+      "steps": 16314,
+      "stress_avg": 48,
+      "body_battery_start": 5,
       "body_battery_end": 83,
       "sleep_seconds": 24120,
       "sleep_score": 80,
@@ -583,6 +594,10 @@
   ],
   "activities": [
     {
+      "date": "2026-07-09",
+      "list": []
+    },
+    {
       "date": "2026-07-08",
       "list": [
         {
@@ -835,24 +850,20 @@
           "endTimeGMT": "2026-07-08 06:35:09",
           "qualifyingDive": false,
           "activityUUID": "7a78060f-3e7e-46cd-b0cd-ad6714eee916",
+          "decoDive": false,
+          "purposeful": false,
+          "manualActivity": false,
+          "pr": false,
           "autoCalcCalories": false,
           "elevationCorrected": false,
           "atpActivity": false,
-          "pr": false,
-          "favorite": false,
-          "decoDive": false,
-          "purposeful": false,
           "parent": false,
-          "manualActivity": false
+          "favorite": false
         }
       ]
     },
     {
       "date": "2026-07-07",
-      "list": []
-    },
-    {
-      "date": "2026-07-06",
       "list": []
     }
   ]

@@ -1,11 +1,11 @@
-# Garmin latest — 2026-07-08
+# Garmin latest — 2026-07-09
 
 ## Wellness oggi
-- Resting HR: 48 bpm
-- Sleep: 6.7 h (score 80)
-- Body battery: 14 -> 83
-- Stress (avg): 18
-- Steps: 10245
+- Resting HR: 50 bpm
+- Sleep: 7.0 h (score 80)
+- Body battery: 5 -> 61
+- Stress (avg): 29
+- Steps: 6931
 
 ## Attività recenti
 # Torino - RwA — 2026-07-08
