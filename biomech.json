@@ -2414,6 +2414,100 @@
         "osc_mm": 96.0,
         "step_mm": 1188
       }
+    },
+    {
+      "id": "23543582423",
+      "date": "2026-07-10",
+      "label": "T6",
+      "reps": [
+        {
+          "dist_m": 1000,
+          "pace_s": 360,
+          "gct_ms": 294.0,
+          "cadence_spm": 154,
+          "osc_mm": 96.2,
+          "step_mm": 1061,
+          "hr": 157
+        },
+        {
+          "dist_m": 1000,
+          "pace_s": 347,
+          "gct_ms": 289.9,
+          "cadence_spm": 156,
+          "osc_mm": 98.6,
+          "step_mm": 1108,
+          "hr": 165
+        },
+        {
+          "dist_m": 531,
+          "pace_s": 365,
+          "gct_ms": 296.3,
+          "cadence_spm": 154,
+          "osc_mm": 97.3,
+          "step_mm": 1069,
+          "hr": 167
+        },
+        {
+          "dist_m": 1000,
+          "pace_s": 272,
+          "gct_ms": 256.4,
+          "cadence_spm": 164,
+          "osc_mm": 103.1,
+          "step_mm": 1336,
+          "hr": 174
+        },
+        {
+          "dist_m": 1000,
+          "pace_s": 270,
+          "gct_ms": 256.6,
+          "cadence_spm": 164,
+          "osc_mm": 103.8,
+          "step_mm": 1348,
+          "hr": 184
+        },
+        {
+          "dist_m": 1000,
+          "pace_s": 270,
+          "gct_ms": 257.4,
+          "cadence_spm": 162,
+          "osc_mm": 105.0,
+          "step_mm": 1362,
+          "hr": 188
+        },
+        {
+          "dist_m": 1000,
+          "pace_s": 280,
+          "gct_ms": 260.5,
+          "cadence_spm": 162,
+          "osc_mm": 103.7,
+          "step_mm": 1324,
+          "hr": 177
+        },
+        {
+          "dist_m": 1000,
+          "pace_s": 278,
+          "gct_ms": 262.6,
+          "cadence_spm": 162,
+          "osc_mm": 104.3,
+          "step_mm": 1322,
+          "hr": 185
+        },
+        {
+          "dist_m": 1000,
+          "pace_s": 272,
+          "gct_ms": 260.7,
+          "cadence_spm": 162,
+          "osc_mm": 104.2,
+          "step_mm": 1333,
+          "hr": 187
+        }
+      ],
+      "avg": {
+        "gct_ms": 270.5,
+        "cadence_spm": 160,
+        "osc_mm": 101.8,
+        "step_mm": 1251
+      }
     }
   ]
 }
