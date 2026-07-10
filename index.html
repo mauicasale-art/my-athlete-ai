@@ -762,14 +762,42 @@ async function main() {
       };
     });
   }
-  // Auto-calcolo t_runs da rep_biomechanics: effort laps = HR≥163 + pace 3:50-6:40/km
+  // Indice Strava laps per data (usato in autoTRuns per T sessions)
+  const stravaLapsByDate = {};
+  if (stravaLaps) {
+    const actById2 = {};
+    for (const a of acts) actById2[a.id] = a;
+    for (const [actId, laps] of Object.entries(stravaLaps)) {
+      const act = actById2[actId];
+      if (!act || act.sport_type !== 'Run' || !laps?.length) continue;
+      stravaLapsByDate[act.start_local.slice(0, 10)] = laps;
+    }
+  }
+
+  // Auto-calcolo t_runs da rep_biomechanics.
+  // Prefer Strava laps: il primo lap corto (<300m o >8min/km) = fine riscaldamento;
+  // tutti i lap successivi con dist≥800m sono i lap d'effort effettivi.
+  // Fallback: Garmin km-laps con HR≥163 + pace 3:50-6:40/km.
   const tRunsMeta = Object.fromEntries((bio?.t_runs_meta || []).map(m => [m.date, m]));
   const autoTRuns = (bio?.rep_biomechanics || [])
     .filter(e => classify(e.label || '') === 'T' && (e.reps?.length||0) >= 2)
     .map(e => {
       const meta = tRunsMeta[e.date] || {};
-      const effortLaps = e.reps.filter(r => r.pace_s > 230 && r.pace_s < 400 && (r.hr||0) >= 163);
-      if (effortLaps.length < 2) return null;
+      let effortLaps;
+      const sLaps = stravaLapsByDate[e.date];
+      if (sLaps?.length) {
+        // Primo lap breve = transizione riscaldamento→sforzo (utente preme lap button)
+        const firstShortIdx = sLaps.findIndex(l => l.dist_m < 300 || l.pace_s > 480);
+        if (firstShortIdx >= 0) {
+          effortLaps = sLaps.slice(firstShortIdx + 1)
+            .filter(l => l.dist_m >= 800 && l.pace_s && l.pace_s < 380);
+        }
+      }
+      if (!effortLaps?.length) {
+        // Fallback Garmin: km-laps con HR≥163 e passo soglia
+        effortLaps = e.reps.filter(r => r.pace_s > 230 && r.pace_s < 400 && (r.hr||0) >= 163);
+      }
+      if ((effortLaps?.length || 0) < 2) return null;
       const tempo_pace_s = Math.round(effortLaps.reduce((s,r)=>s+r.pace_s,0)/effortLaps.length);
       const hrLaps = effortLaps.filter(r=>r.hr);
       const tempo_hr = hrLaps.length ? Math.round(hrLaps.reduce((s,r)=>s+r.hr,0)/hrLaps.length) : null;
