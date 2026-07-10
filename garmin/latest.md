@@ -4,8 +4,8 @@
 - Resting HR: 52 bpm
 - Sleep: 6.7 h (score 69)
 - Body battery: 6 -> 71
-- Stress (avg): 17
-- Steps: 9054
+- Stress (avg): 36
+- Steps: 13410
 
 ## Attività recenti
 # Torino - T6 — 2026-07-10
