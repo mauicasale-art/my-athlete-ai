@@ -890,5 +890,21 @@
     "relative_effort": 144.0,
     "calories": null,
     "kudos_count": 7
+  },
+  {
+    "id": "19251981141",
+    "name": "Morning Run - T6",
+    "sport_type": "Run",
+    "start_local": "2026-07-10T07:31:58",
+    "distance": 8936.5,
+    "moving_time": 2901,
+    "elevation_gain": 13.0,
+    "avg_speed": 3.08,
+    "avg_cadence": 158.6,
+    "avg_hr": 174.6,
+    "max_hr": 191.0,
+    "relative_effort": 130.0,
+    "calories": null,
+    "kudos_count": 0
   }
 ]
