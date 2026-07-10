@@ -1,60 +1,9 @@
 {
-  "t_runs": [
+  "t_runs_meta": [
     {
-      "id": "18792790917",
-      "date": "2026-06-05",
-      "label": "T1",
-      "tempo_pace_s": 275,
-      "tempo_hr": 180,
-      "reps_pace_s": [
-        269,
-        284,
-        271
-      ],
-      "note": "3×2km · rep: 4:29|4:44|4:31 · avg 4:35/km · FC180 effort"
-    },
-    {
-      "id": "18886821325",
-      "date": "2026-06-12",
-      "label": "T2",
-      "tempo_pace_s": 275,
-      "tempo_hr": 179,
-      "note": "3×2km @4:35/km · FC179 effort · soglia T2 reale"
-    },
-    {
-      "id": "19018018651",
-      "date": "2026-06-22",
-      "label": "T3",
-      "tempo_pace_s": 308,
-      "tempo_hr": 177,
-      "reps_pace_s": [
-        307,
-        312,
-        304
-      ],
-      "note": "3×2km · rep: 5:07|5:12|5:04 · avg 5:08/km · FC177 · caldo+digiuno"
-    },
-    {
-      "id": "19093795994",
       "date": "2026-06-28",
-      "label": "T4",
-      "tempo_pace_s": 342,
-      "tempo_hr": 169,
-      "reps_pace_s": [
-        340,
-        347,
-        338
-      ],
       "exclude_threshold": true,
-      "note": "3x2km · rep: 5:40|5:47|5:38 · avg 5:42/km · FC169 · corsa con amica (non test soglia)"
-    },
-    {
-      "id": "19119665382",
-      "date": "2026-06-30",
-      "label": "T5",
-      "tempo_pace_s": 282,
-      "tempo_hr": 184,
-      "note": "4×2km @4:42/km · FC184 effort · target 4:35-4:45 ✓"
+      "note": "corsa con amica (non test soglia)"
     }
   ],
   "aerobic_efficiency": [
