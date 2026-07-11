@@ -1,11 +1,11 @@
-# Garmin latest — 2026-07-10
+# Garmin latest — 2026-07-11
 
 ## Wellness oggi
-- Resting HR: 52 bpm
-- Sleep: 6.7 h (score 69)
-- Body battery: 6 -> 71
-- Stress (avg): 36
-- Steps: 13410
+- Resting HR: 53 bpm
+- Sleep: 7.3 h (score 67)
+- Body battery: 5 -> 51
+- Stress (avg): 30
+- Steps: 732
 
 ## Attività recenti
 # Torino - T6 — 2026-07-10
@@ -16,13 +16,4 @@
 - Max HR: 191.0 bpm
 - Calories: 663.0 kcal
 - Elevation gain: 13.0 m
-
-# Torino - RwA — 2026-07-08
-- Type: running
-- Distance: 9.73 km
-- Duration: 54.9 min
-- Avg HR: 172.0 bpm
-- Max HR: 192.0 bpm
-- Calories: 734.0 kcal
-- Elevation gain: 22.0 m
 
