@@ -1,10 +1,7 @@
 name: Garmin Sync
 
 on:
-  schedule:
-    # ogni mattina alle 07:00 UTC (09:00 ora italiana)
-    - cron: "0 7 * * *"
-  workflow_dispatch: # permette di avviare manualmente dalla tab Actions
+  workflow_dispatch: # avvia manualmente dalla tab Actions (aggiorna token prima se scaduto)
 
 jobs:
   sync:
