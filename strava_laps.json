@@ -3709,5 +3709,126 @@
       "dist_m": 17,
       "elapsed_s": 4
     }
+  ],
+  "19318971453": [
+    {
+      "pace_s": 377,
+      "cadence_spm": 156,
+      "hr": 153.0,
+      "dist_m": 1000,
+      "elapsed_s": 426
+    },
+    {
+      "pace_s": 355,
+      "cadence_spm": 157,
+      "hr": 167.2,
+      "dist_m": 1000,
+      "elapsed_s": 354
+    },
+    {
+      "pace_s": 364,
+      "cadence_spm": 155,
+      "hr": 168.8,
+      "dist_m": 1000,
+      "elapsed_s": 363
+    },
+    {
+      "pace_s": 325,
+      "cadence_spm": 156,
+      "hr": 172.5,
+      "dist_m": 320,
+      "elapsed_s": 104
+    },
+    {
+      "pace_s": 2222,
+      "cadence_spm": 119,
+      "hr": 166.0,
+      "dist_m": 27,
+      "elapsed_s": 99
+    },
+    {
+      "pace_s": 226,
+      "cadence_spm": 171,
+      "hr": 175.8,
+      "dist_m": 530,
+      "elapsed_s": 120
+    },
+    {
+      "pace_s": 704,
+      "cadence_spm": 111,
+      "hr": 166.8,
+      "dist_m": 171,
+      "elapsed_s": 120
+    },
+    {
+      "pace_s": 225,
+      "cadence_spm": 171,
+      "hr": 178.5,
+      "dist_m": 534,
+      "elapsed_s": 120
+    },
+    {
+      "pace_s": 621,
+      "cadence_spm": 124,
+      "hr": 171.2,
+      "dist_m": 194,
+      "elapsed_s": 120
+    },
+    {
+      "pace_s": 228,
+      "cadence_spm": 172,
+      "hr": 180.1,
+      "dist_m": 527,
+      "elapsed_s": 120
+    },
+    {
+      "pace_s": 578,
+      "cadence_spm": 120,
+      "hr": 175.1,
+      "dist_m": 207,
+      "elapsed_s": 160
+    },
+    {
+      "pace_s": 230,
+      "cadence_spm": 171,
+      "hr": 178.2,
+      "dist_m": 520,
+      "elapsed_s": 120
+    },
+    {
+      "pace_s": 763,
+      "cadence_spm": 110,
+      "hr": 169.3,
+      "dist_m": 157,
+      "elapsed_s": 146
+    },
+    {
+      "pace_s": 220,
+      "cadence_spm": 173,
+      "hr": 181.8,
+      "dist_m": 544,
+      "elapsed_s": 120
+    },
+    {
+      "pace_s": 1075,
+      "cadence_spm": 116,
+      "hr": 175.5,
+      "dist_m": 111,
+      "elapsed_s": 120
+    },
+    {
+      "pace_s": 394,
+      "cadence_spm": 146,
+      "hr": 165.9,
+      "dist_m": 1000,
+      "elapsed_s": 393
+    },
+    {
+      "pace_s": 709,
+      "cadence_spm": 108,
+      "hr": 170.8,
+      "dist_m": 8,
+      "elapsed_s": 6
+    }
   ]
 }
