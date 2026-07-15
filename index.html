@@ -774,42 +774,61 @@ async function main() {
     }
   }
 
-  // Auto-calcolo t_runs da rep_biomechanics.
-  // Prefer Strava laps: il primo lap corto (<300m o >8min/km) = fine riscaldamento;
-  // tutti i lap successivi con dist≥800m sono i lap d'effort effettivi.
-  // Fallback: Garmin km-laps con HR≥163 + pace 3:50-6:40/km.
+  // Helper: estrae effort laps da Strava laps di una T session.
+  // Primo lap corto (<300m o >8min/km) = fine riscaldamento; successivi con dist≥800m = sforzo.
+  const tEffortFromStrava = (sLaps) => {
+    if (!sLaps?.length) return null;
+    const firstShortIdx = sLaps.findIndex(l => l.dist_m < 300 || l.pace_s > 480);
+    if (firstShortIdx < 0) return null;
+    const effort = sLaps.slice(firstShortIdx + 1)
+      .filter(l => l.dist_m >= 800 && l.pace_s && l.pace_s < 380);
+    return effort.length >= 2 ? effort : null;
+  };
+
+  const buildTRun = (date, label, effortLaps, meta) => {
+    const tempo_pace_s = Math.round(effortLaps.reduce((s,r)=>s+r.pace_s,0)/effortLaps.length);
+    const hrLaps = effortLaps.filter(r=>r.hr);
+    const tempo_hr = hrLaps.length ? Math.round(hrLaps.reduce((s,r)=>s+r.hr,0)/hrLaps.length) : null;
+    const repStr = effortLaps.map(r=>`${Math.floor(r.pace_s/60)}:${(r.pace_s%60).toString().padStart(2,'0')}`).join('|');
+    return {
+      date, label, tempo_pace_s, tempo_hr,
+      exclude_threshold: (meta||{}).exclude_threshold || false,
+      note: (meta||{}).note
+        ? `${effortLaps.length}×lap · avg ${paceFromS(tempo_pace_s)}/km · FC${tempo_hr} · ${meta.note}`
+        : `${effortLaps.length}×lap · rep: ${repStr} · avg ${paceFromS(tempo_pace_s)}/km · FC${tempo_hr}`,
+    };
+  };
+
   const tRunsMeta = Object.fromEntries((bio?.t_runs_meta || []).map(m => [m.date, m]));
-  const autoTRuns = (bio?.rep_biomechanics || [])
+
+  // Fonte 1: biomech.json (sessioni storiche con dati Garmin)
+  let autoTRuns = (bio?.rep_biomechanics || [])
     .filter(e => classify(e.label || '') === 'T' && (e.reps?.length||0) >= 2)
     .map(e => {
       const meta = tRunsMeta[e.date] || {};
-      let effortLaps;
-      const sLaps = stravaLapsByDate[e.date];
-      if (sLaps?.length) {
-        // Primo lap breve = transizione riscaldamento→sforzo (utente preme lap button)
-        const firstShortIdx = sLaps.findIndex(l => l.dist_m < 300 || l.pace_s > 480);
-        if (firstShortIdx >= 0) {
-          effortLaps = sLaps.slice(firstShortIdx + 1)
-            .filter(l => l.dist_m >= 800 && l.pace_s && l.pace_s < 380);
-        }
-      }
-      if (!effortLaps?.length) {
-        // Fallback Garmin: km-laps con HR≥163 e passo soglia
+      let effortLaps = tEffortFromStrava(stravaLapsByDate[e.date]);
+      if (!effortLaps) {
+        // Fallback Garmin: km-laps con HR≥163
         effortLaps = e.reps.filter(r => r.pace_s > 230 && r.pace_s < 400 && (r.hr||0) >= 163);
       }
-      if ((effortLaps?.length || 0) < 2) return null;
-      const tempo_pace_s = Math.round(effortLaps.reduce((s,r)=>s+r.pace_s,0)/effortLaps.length);
-      const hrLaps = effortLaps.filter(r=>r.hr);
-      const tempo_hr = hrLaps.length ? Math.round(hrLaps.reduce((s,r)=>s+r.hr,0)/hrLaps.length) : null;
-      const repStr = effortLaps.map(r=>`${Math.floor(r.pace_s/60)}:${(r.pace_s%60).toString().padStart(2,'0')}`).join('|');
-      return {
-        date: e.date, label: e.label, tempo_pace_s, tempo_hr,
-        exclude_threshold: meta.exclude_threshold || false,
-        note: meta.note
-          ? `${effortLaps.length}×lap · avg ${paceFromS(tempo_pace_s)}/km · FC${tempo_hr} · ${meta.note}`
-          : `${effortLaps.length}×lap · rep: ${repStr} · avg ${paceFromS(tempo_pace_s)}/km · FC${tempo_hr}`,
-      };
+      if ((effortLaps?.length||0) < 2) return null;
+      return buildTRun(e.date, e.label, effortLaps, meta);
     }).filter(Boolean);
+
+  // Fonte 2: attività Strava con nome T (sessioni future senza sync Garmin)
+  const bioTDates = new Set(autoTRuns.map(t => t.date));
+  const stravaOnlyTRuns = acts
+    .filter(a => a.sport_type === 'Run' && classify(a.name) === 'T' && !bioTDates.has(a.start_local.slice(0,10)))
+    .flatMap(a => {
+      const date = a.start_local.slice(0, 10);
+      const effortLaps = tEffortFromStrava(stravaLapsByDate[date]);
+      if (!effortLaps) return [];
+      const labelMatch = a.name.match(/\bT\d+\b/i);
+      const label = labelMatch ? labelMatch[0].toUpperCase() : a.name;
+      return [buildTRun(date, label, effortLaps, tRunsMeta[date])];
+    });
+
+  autoTRuns = [...autoTRuns, ...stravaOnlyTRuns].sort((a,b) => a.date.localeCompare(b.date));
   const tRunsByDate = Object.fromEntries(autoTRuns.map(t => [t.date, t]));
 
   // Lookup biomeccanica per passo/FC/cadenza effort-only su T e R
