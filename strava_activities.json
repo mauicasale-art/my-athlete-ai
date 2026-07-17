@@ -954,5 +954,37 @@
     "relative_effort": 4.0,
     "calories": null,
     "kudos_count": 2
+  },
+  {
+    "id": "19345738712",
+    "name": "Morning Run",
+    "sport_type": "Run",
+    "start_local": "2026-07-17T07:43:42",
+    "distance": 5020.0,
+    "moving_time": 1673,
+    "elevation_gain": 8.0,
+    "avg_speed": 3.001,
+    "avg_cadence": 155.6,
+    "avg_hr": 172.3,
+    "max_hr": 190.0,
+    "relative_effort": 71.0,
+    "calories": null,
+    "kudos_count": 4
+  },
+  {
+    "id": "19345891391",
+    "name": "Morning Run",
+    "sport_type": "Run",
+    "start_local": "2026-07-17T08:15:14",
+    "distance": 3507.2,
+    "moving_time": 1206,
+    "elevation_gain": 3.0,
+    "avg_speed": 2.908,
+    "avg_cadence": 157.4,
+    "avg_hr": 171.8,
+    "max_hr": 177.0,
+    "relative_effort": 49.0,
+    "calories": null,
+    "kudos_count": 3
   }
 ]
