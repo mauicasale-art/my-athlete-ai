@@ -3911,5 +3911,112 @@
       "dist_m": 509,
       "elapsed_s": 170
     }
+  ],
+  "19371479963": [
+    {
+      "pace_s": 358,
+      "cadence_spm": 155,
+      "hr": 149.3,
+      "dist_m": 1000,
+      "elapsed_s": 358
+    },
+    {
+      "pace_s": 334,
+      "cadence_spm": 158,
+      "hr": 163.1,
+      "dist_m": 1000,
+      "elapsed_s": 335
+    },
+    {
+      "pace_s": 342,
+      "cadence_spm": 156,
+      "hr": 165.5,
+      "dist_m": 1000,
+      "elapsed_s": 343
+    },
+    {
+      "pace_s": 341,
+      "cadence_spm": 156,
+      "hr": 164.4,
+      "dist_m": 1000,
+      "elapsed_s": 379
+    },
+    {
+      "pace_s": 347,
+      "cadence_spm": 156,
+      "hr": 166.1,
+      "dist_m": 1000,
+      "elapsed_s": 358
+    },
+    {
+      "pace_s": 355,
+      "cadence_spm": 157,
+      "hr": 165.7,
+      "dist_m": 1000,
+      "elapsed_s": 354
+    },
+    {
+      "pace_s": 348,
+      "cadence_spm": 158,
+      "hr": 167.1,
+      "dist_m": 1000,
+      "elapsed_s": 349
+    },
+    {
+      "pace_s": 348,
+      "cadence_spm": 157,
+      "hr": 166.6,
+      "dist_m": 1000,
+      "elapsed_s": 363
+    },
+    {
+      "pace_s": 344,
+      "cadence_spm": 158,
+      "hr": 168.1,
+      "dist_m": 1000,
+      "elapsed_s": 344
+    },
+    {
+      "pace_s": 281,
+      "cadence_spm": 165,
+      "hr": 175.3,
+      "dist_m": 1000,
+      "elapsed_s": 331
+    },
+    {
+      "pace_s": 274,
+      "cadence_spm": 165,
+      "hr": 183.2,
+      "dist_m": 1000,
+      "elapsed_s": 274
+    },
+    {
+      "pace_s": 276,
+      "cadence_spm": 164,
+      "hr": 185.3,
+      "dist_m": 1000,
+      "elapsed_s": 276
+    },
+    {
+      "pace_s": 276,
+      "cadence_spm": 164,
+      "hr": 187.7,
+      "dist_m": 1000,
+      "elapsed_s": 276
+    },
+    {
+      "pace_s": 270,
+      "cadence_spm": 164,
+      "hr": 189.9,
+      "dist_m": 1000,
+      "elapsed_s": 270
+    },
+    {
+      "pace_s": 224,
+      "cadence_spm": 174,
+      "hr": 193.5,
+      "dist_m": 18,
+      "elapsed_s": 4
+    }
   ]
 }

@@ -986,5 +986,21 @@
     "relative_effort": 49.0,
     "calories": null,
     "kudos_count": 4
+  },
+  {
+    "id": "19371479963",
+    "name": "Corsa mattutina - L7",
+    "sport_type": "Run",
+    "start_local": "2026-07-19T07:17:24",
+    "distance": 14017.8,
+    "moving_time": 4507,
+    "elevation_gain": 29.0,
+    "avg_speed": 3.11,
+    "avg_cadence": 159.2,
+    "avg_hr": 170.2,
+    "max_hr": 194.0,
+    "relative_effort": 77.0,
+    "calories": null,
+    "kudos_count": 1
   }
 ]
