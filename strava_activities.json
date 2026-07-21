@@ -1002,5 +1002,21 @@
     "relative_effort": 77.0,
     "calories": null,
     "kudos_count": 4
+  },
+  {
+    "id": "19398329644",
+    "name": "Corsa mattutina - Recupero",
+    "sport_type": "Run",
+    "start_local": "2026-07-21T07:21:43",
+    "distance": 8010.4,
+    "moving_time": 3304,
+    "elevation_gain": 17.0,
+    "avg_speed": 2.424,
+    "avg_cadence": 153.2,
+    "avg_hr": 151.4,
+    "max_hr": 157.0,
+    "relative_effort": 14.0,
+    "calories": null,
+    "kudos_count": 4
   }
 ]
