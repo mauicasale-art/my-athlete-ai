@@ -1018,5 +1018,21 @@
     "relative_effort": 14.0,
     "calories": null,
     "kudos_count": 8
+  },
+  {
+    "id": "19441365534",
+    "name": "Corsa mattutina - R8",
+    "sport_type": "Run",
+    "start_local": "2026-07-24T07:39:47",
+    "distance": 7126.5,
+    "moving_time": 2460,
+    "elevation_gain": 15.0,
+    "avg_speed": 2.897,
+    "avg_cadence": 152.6,
+    "avg_hr": 165.6,
+    "max_hr": 190.0,
+    "relative_effort": 33.0,
+    "calories": null,
+    "kudos_count": 0
   }
 ]
