@@ -1033,6 +1033,22 @@
     "max_hr": 190.0,
     "relative_effort": 33.0,
     "calories": null,
-    "kudos_count": 0
+    "kudos_count": 5
+  },
+  {
+    "id": "19442441157",
+    "name": "Camminata Canetta 🐾",
+    "sport_type": "Walk",
+    "start_local": "2026-07-24T10:15:27",
+    "distance": 2371.9,
+    "moving_time": 1681,
+    "elevation_gain": 20.0,
+    "avg_speed": 1.411,
+    "avg_cadence": 113.2,
+    "avg_hr": 118.2,
+    "max_hr": 164.0,
+    "relative_effort": 4.0,
+    "calories": null,
+    "kudos_count": 1
   }
 ]
