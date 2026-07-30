@@ -1082,5 +1082,21 @@
     "relative_effort": 58.0,
     "calories": null,
     "kudos_count": 4
+  },
+  {
+    "id": "19524277040",
+    "name": "Corsa mattutina - T9",
+    "sport_type": "Run",
+    "start_local": "2026-07-30T06:57:08",
+    "distance": 8434.0,
+    "moving_time": 2767,
+    "elevation_gain": 21.0,
+    "avg_speed": 3.048,
+    "avg_cadence": 155.4,
+    "avg_hr": 177.7,
+    "max_hr": 191.0,
+    "relative_effort": 70.0,
+    "calories": null,
+    "kudos_count": 2
   }
 ]
