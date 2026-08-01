@@ -4469,5 +4469,112 @@
       "dist_m": 245,
       "elapsed_s": 121
     }
+  ],
+  "19551001882": [
+    {
+      "pace_s": 357,
+      "cadence_spm": 155,
+      "hr": 147.8,
+      "dist_m": 1000,
+      "elapsed_s": 364
+    },
+    {
+      "pace_s": 369,
+      "cadence_spm": 154,
+      "hr": 155.7,
+      "dist_m": 1000,
+      "elapsed_s": 369
+    },
+    {
+      "pace_s": 389,
+      "cadence_spm": 153,
+      "hr": 154.0,
+      "dist_m": 1000,
+      "elapsed_s": 389
+    },
+    {
+      "pace_s": 385,
+      "cadence_spm": 153,
+      "hr": 153.9,
+      "dist_m": 1000,
+      "elapsed_s": 384
+    },
+    {
+      "pace_s": 391,
+      "cadence_spm": 153,
+      "hr": 154.4,
+      "dist_m": 1000,
+      "elapsed_s": 390
+    },
+    {
+      "pace_s": 386,
+      "cadence_spm": 154,
+      "hr": 155.7,
+      "dist_m": 1000,
+      "elapsed_s": 386
+    },
+    {
+      "pace_s": 382,
+      "cadence_spm": 153,
+      "hr": 156.3,
+      "dist_m": 1000,
+      "elapsed_s": 382
+    },
+    {
+      "pace_s": 377,
+      "cadence_spm": 154,
+      "hr": 155.7,
+      "dist_m": 1000,
+      "elapsed_s": 427
+    },
+    {
+      "pace_s": 391,
+      "cadence_spm": 154,
+      "hr": 156.0,
+      "dist_m": 1000,
+      "elapsed_s": 390
+    },
+    {
+      "pace_s": 370,
+      "cadence_spm": 154,
+      "hr": 157.1,
+      "dist_m": 1000,
+      "elapsed_s": 371
+    },
+    {
+      "pace_s": 358,
+      "cadence_spm": 154,
+      "hr": 158.0,
+      "dist_m": 1000,
+      "elapsed_s": 390
+    },
+    {
+      "pace_s": 274,
+      "cadence_spm": 162,
+      "hr": 175.0,
+      "dist_m": 1000,
+      "elapsed_s": 274
+    },
+    {
+      "pace_s": 277,
+      "cadence_spm": 161,
+      "hr": 179.2,
+      "dist_m": 1000,
+      "elapsed_s": 277
+    },
+    {
+      "pace_s": 268,
+      "cadence_spm": 163,
+      "hr": 183.3,
+      "dist_m": 1000,
+      "elapsed_s": 268
+    },
+    {
+      "pace_s": 286,
+      "cadence_spm": 166,
+      "hr": 186.0,
+      "dist_m": 21,
+      "elapsed_s": 6
+    }
   ]
 }
