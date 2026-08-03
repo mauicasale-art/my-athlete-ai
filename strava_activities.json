@@ -1114,5 +1114,21 @@
     "relative_effort": 36.0,
     "calories": null,
     "kudos_count": 4
+  },
+  {
+    "id": "19578483462",
+    "name": "Corsa mattutina - R10",
+    "sport_type": "Run",
+    "start_local": "2026-08-03T07:23:48",
+    "distance": 10071.5,
+    "moving_time": 3171,
+    "elevation_gain": 15.0,
+    "avg_speed": 3.176,
+    "avg_cadence": 156.4,
+    "avg_hr": 171.7,
+    "max_hr": 193.0,
+    "relative_effort": 61.0,
+    "calories": null,
+    "kudos_count": 2
   }
 ]
