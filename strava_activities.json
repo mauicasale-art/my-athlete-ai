@@ -1162,5 +1162,21 @@
     "relative_effort": 4.0,
     "calories": null,
     "kudos_count": 1
+  },
+  {
+    "id": "19649490371",
+    "name": "Corsa mattutina - L10",
+    "sport_type": "Run",
+    "start_local": "2026-08-08T07:09:18",
+    "distance": 16012.2,
+    "moving_time": 5620,
+    "elevation_gain": 18.0,
+    "avg_speed": 2.849,
+    "avg_cadence": 156.2,
+    "avg_hr": 162.2,
+    "max_hr": 182.0,
+    "relative_effort": 56.0,
+    "calories": null,
+    "kudos_count": 0
   }
 ]
