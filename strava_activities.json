@@ -1210,5 +1210,21 @@
     "relative_effort": 72.0,
     "calories": null,
     "kudos_count": 3
+  },
+  {
+    "id": "19784108989",
+    "name": "Corsa serale - F",
+    "sport_type": "Run",
+    "start_local": "2026-08-17T20:38:28",
+    "distance": 8306.1,
+    "moving_time": 3000,
+    "elevation_gain": 13.0,
+    "avg_speed": 2.769,
+    "avg_cadence": 152.4,
+    "avg_hr": 170.1,
+    "max_hr": 198.0,
+    "relative_effort": 55.0,
+    "calories": null,
+    "kudos_count": 1
   }
 ]
