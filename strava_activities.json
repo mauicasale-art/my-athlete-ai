@@ -1226,5 +1226,21 @@
     "relative_effort": 55.0,
     "calories": null,
     "kudos_count": 4
+  },
+  {
+    "id": "19827874262",
+    "name": "Corsa serale - R12",
+    "sport_type": "Run",
+    "start_local": "2026-08-20T19:58:15",
+    "distance": 12319.1,
+    "moving_time": 4003,
+    "elevation_gain": 20.0,
+    "avg_speed": 3.077,
+    "avg_cadence": 155.4,
+    "avg_hr": 177.2,
+    "max_hr": 194.0,
+    "relative_effort": 98.0,
+    "calories": null,
+    "kudos_count": 0
   }
 ]
