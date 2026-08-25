@@ -1289,11 +1289,11 @@
     "max_hr": 132.0,
     "relative_effort": 4.0,
     "calories": null,
-    "kudos_count": 2
+    "kudos_count": 3
   },
   {
     "id": "19897256329",
-    "name": "Camminata serale",
+    "name": "Camminata canetta 🐾",
     "sport_type": "Walk",
     "start_local": "2026-08-25T18:52:46",
     "distance": 2852.0,
@@ -1305,6 +1305,6 @@
     "max_hr": 103.0,
     "relative_effort": 6.0,
     "calories": null,
-    "kudos_count": 0
+    "kudos_count": 2
   }
 ]
