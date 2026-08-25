@@ -1289,6 +1289,22 @@
     "max_hr": 132.0,
     "relative_effort": 4.0,
     "calories": null,
-    "kudos_count": 1
+    "kudos_count": 2
+  },
+  {
+    "id": "19897256329",
+    "name": "Camminata serale",
+    "sport_type": "Walk",
+    "start_local": "2026-08-25T18:52:46",
+    "distance": 2852.0,
+    "moving_time": 3824,
+    "elevation_gain": 4.0,
+    "avg_speed": 0.746,
+    "avg_cadence": 96.8,
+    "avg_hr": 92.5,
+    "max_hr": 103.0,
+    "relative_effort": 6.0,
+    "calories": null,
+    "kudos_count": 0
   }
 ]
