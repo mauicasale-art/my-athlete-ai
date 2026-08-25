@@ -1274,5 +1274,21 @@
     "relative_effort": 26.0,
     "calories": null,
     "kudos_count": 6
+  },
+  {
+    "id": "19889353119",
+    "name": "Camminata mattutina",
+    "sport_type": "Walk",
+    "start_local": "2026-08-25T10:15:45",
+    "distance": 2577.3,
+    "moving_time": 1637,
+    "elevation_gain": 15.0,
+    "avg_speed": 1.574,
+    "avg_cadence": 115.8,
+    "avg_hr": 119.1,
+    "max_hr": 132.0,
+    "relative_effort": 4.0,
+    "calories": null,
+    "kudos_count": 0
   }
 ]
