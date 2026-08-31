@@ -1385,6 +1385,22 @@
     "max_hr": 144.0,
     "relative_effort": 4.0,
     "calories": null,
-    "kudos_count": 0
+    "kudos_count": 1
+  },
+  {
+    "id": "19971497245",
+    "name": "Corsa mattutina - T14",
+    "sport_type": "Run",
+    "start_local": "2026-08-31T06:56:01",
+    "distance": 8363.4,
+    "moving_time": 2650,
+    "elevation_gain": 40.0,
+    "avg_speed": 3.156,
+    "avg_cadence": 158.0,
+    "avg_hr": 177.0,
+    "max_hr": 195.0,
+    "relative_effort": 74.0,
+    "calories": null,
+    "kudos_count": 2
   }
 ]
