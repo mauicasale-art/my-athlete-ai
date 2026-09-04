@@ -1402,5 +1402,21 @@
     "relative_effort": 74.0,
     "calories": null,
     "kudos_count": 3
+  },
+  {
+    "id": "20029588717",
+    "name": "Corsa mattutina - R14",
+    "sport_type": "Run",
+    "start_local": "2026-09-04T07:39:50",
+    "distance": 10133.0,
+    "moving_time": 3454,
+    "elevation_gain": 17.0,
+    "avg_speed": 2.934,
+    "avg_cadence": 155.0,
+    "avg_hr": 172.2,
+    "max_hr": 194.0,
+    "relative_effort": 77.0,
+    "calories": null,
+    "kudos_count": 1
   }
 ]
