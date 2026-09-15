@@ -1482,5 +1482,37 @@
     "relative_effort": 45.0,
     "calories": null,
     "kudos_count": 5
+  },
+  {
+    "id": "20178668205",
+    "name": "Escursione mattutina",
+    "sport_type": "Hike",
+    "start_local": "2026-09-15T05:26:42",
+    "distance": 1250.5,
+    "moving_time": 1601,
+    "elevation_gain": 146.0,
+    "avg_speed": 0.781,
+    "avg_cadence": 107.2,
+    "avg_hr": 105.7,
+    "max_hr": 152.0,
+    "relative_effort": 3.0,
+    "calories": null,
+    "kudos_count": 0
+  },
+  {
+    "id": "20178953265",
+    "name": "Escursione mattutina",
+    "sport_type": "Hike",
+    "start_local": "2026-09-15T06:42:43",
+    "distance": 1283.5,
+    "moving_time": 1800,
+    "elevation_gain": 36.0,
+    "avg_speed": 0.713,
+    "avg_cadence": 107.2,
+    "avg_hr": 95.3,
+    "max_hr": 129.0,
+    "relative_effort": 3.0,
+    "calories": null,
+    "kudos_count": 0
   }
 ]
