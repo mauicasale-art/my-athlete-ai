@@ -1514,5 +1514,21 @@
     "relative_effort": 3.0,
     "calories": null,
     "kudos_count": 1
+  },
+  {
+    "id": "20226864240",
+    "name": "Sessione di trail running",
+    "sport_type": "TrailRun",
+    "start_local": "2026-09-18T17:35:48",
+    "distance": 9007.9,
+    "moving_time": 3305,
+    "elevation_gain": 219.0,
+    "avg_speed": 2.726,
+    "avg_cadence": 153.6,
+    "avg_hr": 168.8,
+    "max_hr": 184.0,
+    "relative_effort": 74.0,
+    "calories": null,
+    "kudos_count": 1
   }
 ]
