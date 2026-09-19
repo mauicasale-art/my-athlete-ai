@@ -1529,6 +1529,38 @@
     "max_hr": 184.0,
     "relative_effort": 74.0,
     "calories": null,
+    "kudos_count": 4
+  },
+  {
+    "id": "20234329929",
+    "name": "Morning Row",
+    "sport_type": "Rowing",
+    "start_local": "2026-09-19T06:11:46",
+    "distance": 4316.3,
+    "moving_time": 4085,
+    "elevation_gain": 82.7,
+    "avg_speed": 1.057,
+    "avg_cadence": 56.2,
+    "avg_hr": 109.7,
+    "max_hr": 166.0,
+    "relative_effort": 10.0,
+    "calories": null,
     "kudos_count": 2
+  },
+  {
+    "id": "20236110344",
+    "name": "Escursione dell'ora di pranzo",
+    "sport_type": "Hike",
+    "start_local": "2026-09-19T11:14:03",
+    "distance": 4597.6,
+    "moving_time": 4982,
+    "elevation_gain": 124.0,
+    "avg_speed": 0.923,
+    "avg_cadence": 106.4,
+    "avg_hr": 97.9,
+    "max_hr": 139.0,
+    "relative_effort": 9.0,
+    "calories": null,
+    "kudos_count": 1
   }
 ]
