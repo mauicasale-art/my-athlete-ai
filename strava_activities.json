@@ -1529,7 +1529,7 @@
     "max_hr": 184.0,
     "relative_effort": 74.0,
     "calories": null,
-    "kudos_count": 4
+    "kudos_count": 5
   },
   {
     "id": "20234329929",
@@ -1545,7 +1545,7 @@
     "max_hr": 166.0,
     "relative_effort": 10.0,
     "calories": null,
-    "kudos_count": 2
+    "kudos_count": 3
   },
   {
     "id": "20236110344",
@@ -1561,6 +1561,6 @@
     "max_hr": 139.0,
     "relative_effort": 9.0,
     "calories": null,
-    "kudos_count": 1
+    "kudos_count": 3
   }
 ]
