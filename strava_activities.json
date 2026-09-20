@@ -1562,5 +1562,21 @@
     "relative_effort": 9.0,
     "calories": null,
     "kudos_count": 3
+  },
+  {
+    "id": "20251622328",
+    "name": "Sinharaja Rainforest",
+    "sport_type": "Hike",
+    "start_local": "2026-09-20T12:35:20",
+    "distance": 5579.5,
+    "moving_time": 7253,
+    "elevation_gain": 215.0,
+    "avg_speed": 0.769,
+    "avg_cadence": 104.8,
+    "avg_hr": 103.0,
+    "max_hr": 139.0,
+    "relative_effort": 15.0,
+    "calories": null,
+    "kudos_count": 0
   }
 ]
