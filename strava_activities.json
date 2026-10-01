@@ -1594,5 +1594,21 @@
     "relative_effort": 60.0,
     "calories": null,
     "kudos_count": 5
+  },
+  {
+    "id": "20402874075",
+    "name": "Corsa mattutina - T18",
+    "sport_type": "Run",
+    "start_local": "2026-10-01T08:10:15",
+    "distance": 9565.7,
+    "moving_time": 3144,
+    "elevation_gain": 20.0,
+    "avg_speed": 3.043,
+    "avg_cadence": 155.6,
+    "avg_hr": 170.4,
+    "max_hr": 193.0,
+    "relative_effort": 66.0,
+    "calories": null,
+    "kudos_count": 3
   }
 ]
