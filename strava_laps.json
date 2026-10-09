@@ -6727,5 +6727,49 @@
       "dist_m": 610,
       "elapsed_s": 264
     }
+  ],
+  "20506175761": [
+    {
+      "pace_s": 373,
+      "cadence_spm": 152,
+      "hr": 159.0,
+      "dist_m": 1000,
+      "elapsed_s": 424
+    },
+    {
+      "pace_s": 377,
+      "cadence_spm": 151,
+      "hr": 165.0,
+      "dist_m": 1000,
+      "elapsed_s": 378
+    },
+    {
+      "pace_s": 389,
+      "cadence_spm": 151,
+      "hr": 163.3,
+      "dist_m": 1000,
+      "elapsed_s": 389
+    },
+    {
+      "pace_s": 376,
+      "cadence_spm": 151,
+      "hr": 166.2,
+      "dist_m": 1000,
+      "elapsed_s": 376
+    },
+    {
+      "pace_s": 362,
+      "cadence_spm": 153,
+      "hr": 167.5,
+      "dist_m": 1000,
+      "elapsed_s": 362
+    },
+    {
+      "pace_s": 301,
+      "cadence_spm": 157,
+      "hr": 176.3,
+      "dist_m": 508,
+      "elapsed_s": 153
+    }
   ]
 }
