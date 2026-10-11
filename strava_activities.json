@@ -1657,6 +1657,22 @@
     "max_hr": 182.0,
     "relative_effort": 37.0,
     "calories": null,
-    "kudos_count": 4
+    "kudos_count": 5
+  },
+  {
+    "id": "20537542574",
+    "name": "Mezza del Re",
+    "sport_type": "Run",
+    "start_local": "2026-10-11T09:01:54",
+    "distance": 21265.1,
+    "moving_time": 6260,
+    "elevation_gain": 99.0,
+    "avg_speed": 3.397,
+    "avg_cadence": 160.2,
+    "avg_hr": 183.2,
+    "max_hr": 193.0,
+    "relative_effort": 211.0,
+    "calories": null,
+    "kudos_count": 5
   }
 ]

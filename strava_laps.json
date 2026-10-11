@@ -6771,5 +6771,161 @@
       "dist_m": 508,
       "elapsed_s": 153
     }
+  ],
+  "20537542574": [
+    {
+      "pace_s": 291,
+      "cadence_spm": 161,
+      "hr": 169.8,
+      "dist_m": 1000,
+      "elapsed_s": 291
+    },
+    {
+      "pace_s": 290,
+      "cadence_spm": 161,
+      "hr": 182.2,
+      "dist_m": 1000,
+      "elapsed_s": 290
+    },
+    {
+      "pace_s": 295,
+      "cadence_spm": 160,
+      "hr": 184.2,
+      "dist_m": 1000,
+      "elapsed_s": 295
+    },
+    {
+      "pace_s": 300,
+      "cadence_spm": 158,
+      "hr": 184.4,
+      "dist_m": 1000,
+      "elapsed_s": 300
+    },
+    {
+      "pace_s": 294,
+      "cadence_spm": 159,
+      "hr": 183.9,
+      "dist_m": 1000,
+      "elapsed_s": 294
+    },
+    {
+      "pace_s": 301,
+      "cadence_spm": 159,
+      "hr": 182.6,
+      "dist_m": 1000,
+      "elapsed_s": 301
+    },
+    {
+      "pace_s": 303,
+      "cadence_spm": 159,
+      "hr": 183.3,
+      "dist_m": 1000,
+      "elapsed_s": 303
+    },
+    {
+      "pace_s": 291,
+      "cadence_spm": 161,
+      "hr": 183.1,
+      "dist_m": 1000,
+      "elapsed_s": 291
+    },
+    {
+      "pace_s": 289,
+      "cadence_spm": 160,
+      "hr": 182.1,
+      "dist_m": 1000,
+      "elapsed_s": 289
+    },
+    {
+      "pace_s": 291,
+      "cadence_spm": 161,
+      "hr": 184.6,
+      "dist_m": 1000,
+      "elapsed_s": 291
+    },
+    {
+      "pace_s": 285,
+      "cadence_spm": 161,
+      "hr": 181.4,
+      "dist_m": 1000,
+      "elapsed_s": 285
+    },
+    {
+      "pace_s": 282,
+      "cadence_spm": 161,
+      "hr": 181.7,
+      "dist_m": 1000,
+      "elapsed_s": 282
+    },
+    {
+      "pace_s": 285,
+      "cadence_spm": 160,
+      "hr": 180.8,
+      "dist_m": 1000,
+      "elapsed_s": 285
+    },
+    {
+      "pace_s": 304,
+      "cadence_spm": 159,
+      "hr": 183.5,
+      "dist_m": 1000,
+      "elapsed_s": 304
+    },
+    {
+      "pace_s": 295,
+      "cadence_spm": 160,
+      "hr": 183.6,
+      "dist_m": 1000,
+      "elapsed_s": 295
+    },
+    {
+      "pace_s": 291,
+      "cadence_spm": 161,
+      "hr": 183.7,
+      "dist_m": 1000,
+      "elapsed_s": 291
+    },
+    {
+      "pace_s": 302,
+      "cadence_spm": 160,
+      "hr": 183.4,
+      "dist_m": 1000,
+      "elapsed_s": 302
+    },
+    {
+      "pace_s": 286,
+      "cadence_spm": 162,
+      "hr": 185.9,
+      "dist_m": 1000,
+      "elapsed_s": 286
+    },
+    {
+      "pace_s": 299,
+      "cadence_spm": 159,
+      "hr": 187.0,
+      "dist_m": 1000,
+      "elapsed_s": 299
+    },
+    {
+      "pace_s": 307,
+      "cadence_spm": 159,
+      "hr": 186.7,
+      "dist_m": 1000,
+      "elapsed_s": 307
+    },
+    {
+      "pace_s": 305,
+      "cadence_spm": 161,
+      "hr": 187.9,
+      "dist_m": 1000,
+      "elapsed_s": 305
+    },
+    {
+      "pace_s": 264,
+      "cadence_spm": 164,
+      "hr": 191.1,
+      "dist_m": 265,
+      "elapsed_s": 70
+    }
   ]
 }
