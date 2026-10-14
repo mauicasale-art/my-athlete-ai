@@ -6927,5 +6927,42 @@
       "dist_m": 265,
       "elapsed_s": 70
     }
+  ],
+  "20578459773": [
+    {
+      "pace_s": 372,
+      "cadence_spm": 151,
+      "hr": 150.0,
+      "dist_m": 1000,
+      "elapsed_s": 372
+    },
+    {
+      "pace_s": 375,
+      "cadence_spm": 152,
+      "hr": 159.6,
+      "dist_m": 1000,
+      "elapsed_s": 373
+    },
+    {
+      "pace_s": 394,
+      "cadence_spm": 152,
+      "hr": 157.6,
+      "dist_m": 1000,
+      "elapsed_s": 393
+    },
+    {
+      "pace_s": 375,
+      "cadence_spm": 152,
+      "hr": 159.1,
+      "dist_m": 1000,
+      "elapsed_s": 374
+    },
+    {
+      "pace_s": 369,
+      "cadence_spm": 152,
+      "hr": 161.1,
+      "dist_m": 779,
+      "elapsed_s": 287
+    }
   ]
 }
