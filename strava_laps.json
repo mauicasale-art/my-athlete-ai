@@ -7064,5 +7064,112 @@
       "dist_m": 59,
       "elapsed_s": 30
     }
+  ],
+  "20630437500": [
+    {
+      "pace_s": 403,
+      "cadence_spm": 154,
+      "hr": 147.2,
+      "dist_m": 1000,
+      "elapsed_s": 404
+    },
+    {
+      "pace_s": 398,
+      "cadence_spm": 155,
+      "hr": 157.6,
+      "dist_m": 1000,
+      "elapsed_s": 399
+    },
+    {
+      "pace_s": 407,
+      "cadence_spm": 155,
+      "hr": 160.1,
+      "dist_m": 1000,
+      "elapsed_s": 406
+    },
+    {
+      "pace_s": 407,
+      "cadence_spm": 154,
+      "hr": 158.9,
+      "dist_m": 1000,
+      "elapsed_s": 405
+    },
+    {
+      "pace_s": 408,
+      "cadence_spm": 153,
+      "hr": 159.6,
+      "dist_m": 1000,
+      "elapsed_s": 408
+    },
+    {
+      "pace_s": 410,
+      "cadence_spm": 151,
+      "hr": 160.9,
+      "dist_m": 1000,
+      "elapsed_s": 410
+    },
+    {
+      "pace_s": 402,
+      "cadence_spm": 152,
+      "hr": 163.1,
+      "dist_m": 1000,
+      "elapsed_s": 402
+    },
+    {
+      "pace_s": 408,
+      "cadence_spm": 154,
+      "hr": 160.4,
+      "dist_m": 1000,
+      "elapsed_s": 431
+    },
+    {
+      "pace_s": 417,
+      "cadence_spm": 153,
+      "hr": 162.2,
+      "dist_m": 1000,
+      "elapsed_s": 415
+    },
+    {
+      "pace_s": 417,
+      "cadence_spm": 152,
+      "hr": 161.0,
+      "dist_m": 1000,
+      "elapsed_s": 416
+    },
+    {
+      "pace_s": 413,
+      "cadence_spm": 151,
+      "hr": 160.5,
+      "dist_m": 1000,
+      "elapsed_s": 414
+    },
+    {
+      "pace_s": 412,
+      "cadence_spm": 150,
+      "hr": 158.9,
+      "dist_m": 1000,
+      "elapsed_s": 429
+    },
+    {
+      "pace_s": 360,
+      "cadence_spm": 154,
+      "hr": 167.2,
+      "dist_m": 1000,
+      "elapsed_s": 359
+    },
+    {
+      "pace_s": 305,
+      "cadence_spm": 158,
+      "hr": 172.5,
+      "dist_m": 1000,
+      "elapsed_s": 305
+    },
+    {
+      "pace_s": 286,
+      "cadence_spm": 162,
+      "hr": 171.0,
+      "dist_m": 10,
+      "elapsed_s": 3
+    }
   ]
 }

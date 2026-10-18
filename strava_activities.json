@@ -1722,5 +1722,21 @@
     "relative_effort": 6.0,
     "calories": null,
     "kudos_count": 2
+  },
+  {
+    "id": "20630437500",
+    "name": "L0 - lungo lento",
+    "sport_type": "Run",
+    "start_local": "2026-10-18T08:26:48",
+    "distance": 14010.5,
+    "moving_time": 5569,
+    "elevation_gain": 28.0,
+    "avg_speed": 2.516,
+    "avg_cadence": 153.0,
+    "avg_hr": 160.5,
+    "max_hr": 183.0,
+    "relative_effort": 68.0,
+    "calories": null,
+    "kudos_count": 2
   }
 ]
