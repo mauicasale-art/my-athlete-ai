@@ -1754,5 +1754,21 @@
     "relative_effort": 46.0,
     "calories": null,
     "kudos_count": 6
+  },
+  {
+    "id": "20671026015",
+    "name": "Corsa mattutina - Q1.1 Fartlek",
+    "sport_type": "Run",
+    "start_local": "2026-10-21T08:11:02",
+    "distance": 10270.9,
+    "moving_time": 3567,
+    "elevation_gain": 24.0,
+    "avg_speed": 2.879,
+    "avg_cadence": 152.0,
+    "avg_hr": 165.6,
+    "max_hr": 187.0,
+    "relative_effort": 64.0,
+    "calories": null,
+    "kudos_count": 1
   }
 ]
