@@ -1773,7 +1773,7 @@
   },
   {
     "id": "20698029600",
-    "name": "Corsa dell'ora di pranzo",
+    "name": "Corsa dell'ora di pranzo - Q1.2",
     "sport_type": "Run",
     "start_local": "2026-10-23T11:07:04",
     "distance": 2025.4,
@@ -1785,6 +1785,22 @@
     "max_hr": 167.0,
     "relative_effort": 9.0,
     "calories": null,
-    "kudos_count": 0
+    "kudos_count": 1
+  },
+  {
+    "id": "20698460817",
+    "name": "Corsa dell'ora di pranzo - Q1.2",
+    "sport_type": "Run",
+    "start_local": "2026-10-23T11:20:57",
+    "distance": 9061.2,
+    "moving_time": 2805,
+    "elevation_gain": 17.0,
+    "avg_speed": 3.23,
+    "avg_cadence": 156.8,
+    "avg_hr": 174.6,
+    "max_hr": 185.0,
+    "relative_effort": 74.0,
+    "calories": null,
+    "kudos_count": 3
   }
 ]
