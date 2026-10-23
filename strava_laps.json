@@ -7462,5 +7462,28 @@
       "dist_m": 591,
       "elapsed_s": 199
     }
+  ],
+  "20698029600": [
+    {
+      "pace_s": 352,
+      "cadence_spm": 155,
+      "hr": 156.5,
+      "dist_m": 1000,
+      "elapsed_s": 384
+    },
+    {
+      "pace_s": 365,
+      "cadence_spm": 154,
+      "hr": 163.3,
+      "dist_m": 1000,
+      "elapsed_s": 365
+    },
+    {
+      "pace_s": 513,
+      "cadence_spm": 135,
+      "hr": 154.8,
+      "dist_m": 25,
+      "elapsed_s": 52
+    }
   ]
 }
