@@ -1818,5 +1818,21 @@
     "relative_effort": 74.0,
     "calories": null,
     "kudos_count": 6
+  },
+  {
+    "id": "20747136900",
+    "name": "Corsa mattutina - Q2.2",
+    "sport_type": "Run",
+    "start_local": "2026-10-27T07:25:29",
+    "distance": 16011.2,
+    "moving_time": 5025,
+    "elevation_gain": 29.0,
+    "avg_speed": 3.186,
+    "avg_cadence": 157.2,
+    "avg_hr": 172.6,
+    "max_hr": 182.0,
+    "relative_effort": 122.0,
+    "calories": null,
+    "kudos_count": 5
   }
 ]
