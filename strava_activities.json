@@ -1834,5 +1834,21 @@
     "relative_effort": 122.0,
     "calories": null,
     "kudos_count": 6
+  },
+  {
+    "id": "20761433871",
+    "name": "Corsa mattutina - Recovery",
+    "sport_type": "Run",
+    "start_local": "2026-10-28T08:12:15",
+    "distance": 8058.6,
+    "moving_time": 3128,
+    "elevation_gain": 16.0,
+    "avg_speed": 2.576,
+    "avg_cadence": 155.0,
+    "avg_hr": 156.6,
+    "max_hr": 165.0,
+    "relative_effort": 22.0,
+    "calories": null,
+    "kudos_count": 1
   }
 ]
