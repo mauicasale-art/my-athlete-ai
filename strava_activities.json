@@ -1882,5 +1882,21 @@
     "relative_effort": 90.0,
     "calories": null,
     "kudos_count": 5
+  },
+  {
+    "id": "20826011539",
+    "name": "Corsa mattutina - F3?",
+    "sport_type": "Run",
+    "start_local": "2026-11-02T08:31:39",
+    "distance": 10019.7,
+    "moving_time": 3081,
+    "elevation_gain": 22.0,
+    "avg_speed": 3.252,
+    "avg_cadence": 165.2,
+    "avg_hr": 165.0,
+    "max_hr": 174.0,
+    "relative_effort": 63.0,
+    "calories": null,
+    "kudos_count": 2
   }
 ]
