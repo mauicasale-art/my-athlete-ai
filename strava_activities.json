@@ -1898,5 +1898,21 @@
     "relative_effort": 63.0,
     "calories": null,
     "kudos_count": 6
+  },
+  {
+    "id": "20847239642",
+    "name": "Corsa serale - Q3.1 R",
+    "sport_type": "Run",
+    "start_local": "2026-11-03T19:24:40",
+    "distance": 10414.7,
+    "moving_time": 3800,
+    "elevation_gain": 19.0,
+    "avg_speed": 2.741,
+    "avg_cadence": 151.0,
+    "avg_hr": 163.8,
+    "max_hr": 188.0,
+    "relative_effort": 56.0,
+    "calories": null,
+    "kudos_count": 2
   }
 ]
