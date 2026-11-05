@@ -1914,5 +1914,21 @@
     "relative_effort": 56.0,
     "calories": null,
     "kudos_count": 6
+  },
+  {
+    "id": "20867174549",
+    "name": "Camminata Carletta 🐾",
+    "sport_type": "Walk",
+    "start_local": "2026-11-05T10:10:55",
+    "distance": 2522.8,
+    "moving_time": 1526,
+    "elevation_gain": 17.0,
+    "avg_speed": 1.653,
+    "avg_cadence": 124.4,
+    "avg_hr": 129.5,
+    "max_hr": 158.0,
+    "relative_effort": 5.0,
+    "calories": null,
+    "kudos_count": 1
   }
 ]
