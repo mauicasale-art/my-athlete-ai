@@ -1913,7 +1913,7 @@
     "max_hr": 188.0,
     "relative_effort": 56.0,
     "calories": null,
-    "kudos_count": 6
+    "kudos_count": 7
   },
   {
     "id": "20867174549",
@@ -1929,6 +1929,22 @@
     "max_hr": 158.0,
     "relative_effort": 5.0,
     "calories": null,
-    "kudos_count": 3
+    "kudos_count": 4
+  },
+  {
+    "id": "20880792206",
+    "name": "Corsa mattutina Po - Test 10k (ritmo mezza?)",
+    "sport_type": "Run",
+    "start_local": "2026-11-06T10:38:53",
+    "distance": 14445.7,
+    "moving_time": 4434,
+    "elevation_gain": 48.0,
+    "avg_speed": 3.258,
+    "avg_cadence": 160.8,
+    "avg_hr": 173.5,
+    "max_hr": 188.0,
+    "relative_effort": 111.0,
+    "calories": null,
+    "kudos_count": 2
   }
 ]
