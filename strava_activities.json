@@ -1946,5 +1946,21 @@
     "relative_effort": 111.0,
     "calories": null,
     "kudos_count": 6
+  },
+  {
+    "id": "20908166901",
+    "name": "Corsa dell'ora di pranzo",
+    "sport_type": "Run",
+    "start_local": "2026-11-08T11:28:42",
+    "distance": 21119.5,
+    "moving_time": 6858,
+    "elevation_gain": 47.0,
+    "avg_speed": 3.08,
+    "avg_cadence": 159.6,
+    "avg_hr": 163.3,
+    "max_hr": 178.0,
+    "relative_effort": 104.0,
+    "calories": null,
+    "kudos_count": 4
   }
 ]
