@@ -1962,5 +1962,21 @@
     "relative_effort": 104.0,
     "calories": null,
     "kudos_count": 8
+  },
+  {
+    "id": "20930400213",
+    "name": "Corsa mattutina Q4.1",
+    "sport_type": "Run",
+    "start_local": "2026-11-10T09:19:49",
+    "distance": 12504.9,
+    "moving_time": 3882,
+    "elevation_gain": 36.0,
+    "avg_speed": 3.221,
+    "avg_cadence": 161.2,
+    "avg_hr": 171.7,
+    "max_hr": 183.0,
+    "relative_effort": 90.0,
+    "calories": null,
+    "kudos_count": 4
   }
 ]
