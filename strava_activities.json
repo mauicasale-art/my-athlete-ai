@@ -1978,5 +1978,21 @@
     "relative_effort": 90.0,
     "calories": null,
     "kudos_count": 7
+  },
+  {
+    "id": "20950642152",
+    "name": "Corsa serale - F4",
+    "sport_type": "Run",
+    "start_local": "2026-11-11T18:37:26",
+    "distance": 10042.2,
+    "moving_time": 3810,
+    "elevation_gain": 20.0,
+    "avg_speed": 2.636,
+    "avg_cadence": 155.6,
+    "avg_hr": 158.5,
+    "max_hr": 166.0,
+    "relative_effort": 38.0,
+    "calories": null,
+    "kudos_count": 0
   }
 ]
