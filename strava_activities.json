@@ -2057,6 +2057,22 @@
     "max_hr": 187.0,
     "relative_effort": 63.0,
     "calories": null,
-    "kudos_count": 3
+    "kudos_count": 4
+  },
+  {
+    "id": "21055341964",
+    "name": "Corsa mattutina - Q5.2",
+    "sport_type": "Run",
+    "start_local": "2026-11-20T07:32:56",
+    "distance": 11020.2,
+    "moving_time": 3501,
+    "elevation_gain": 24.0,
+    "avg_speed": 3.148,
+    "avg_cadence": 158.0,
+    "avg_hr": 166.6,
+    "max_hr": 181.0,
+    "relative_effort": 64.0,
+    "calories": null,
+    "kudos_count": 2
   }
 ]
