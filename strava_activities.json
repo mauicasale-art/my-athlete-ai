@@ -2074,5 +2074,21 @@
     "relative_effort": 64.0,
     "calories": null,
     "kudos_count": 4
+  },
+  {
+    "id": "21079879769",
+    "name": "L5",
+    "sport_type": "Run",
+    "start_local": "2026-11-22T08:39:42",
+    "distance": 15012.7,
+    "moving_time": 4894,
+    "elevation_gain": 30.0,
+    "avg_speed": 3.068,
+    "avg_cadence": 157.6,
+    "avg_hr": 163.3,
+    "max_hr": 180.0,
+    "relative_effort": 70.0,
+    "calories": null,
+    "kudos_count": 2
   }
 ]
